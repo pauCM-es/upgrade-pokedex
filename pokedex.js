@@ -106,24 +106,20 @@ const checkEvolutions = (pokemon) => {
   if (prevPokemon.evolution_forms === currentPokemon.evolution_forms) {
     prevEvolName$$.textContent = prevPokemon.name
     evolutions.prev = prevPokemon
-    // console.log(prevPokemon)
   }else {prevEvolName$$.textContent = "---"}
 
   if (nextPokemon.evolution_forms === currentPokemon.evolution_forms) {
     nextEvolName$$.textContent = nextPokemon.name
     evolutions.next = nextPokemon
-    console.log(evolutions)
   }else {nextEvolName$$.textContent = "---"}
 }
 prevEvolBtn$$.addEventListener("click", (e)=>{
   printDetails(e, evolutions.prev)
   checkEvolutions(evolutions.prev)
-  console.log(evolutions.prev)
 })
 nextEvolBtn$$.addEventListener("click", (e)=>{
   printDetails(e, evolutions.next)
   checkEvolutions(evolutions.next)
-  console.log(evolutions.next)
 })
 
 //! start fetching informarion and printing it:
@@ -133,11 +129,18 @@ const printDetails = (e, pokemon) => {
 
   //? removes previous entries
   removeElements(detailsFlavors$$, ".entry");
+  removeElements(detailsTypes$$, "span");
 
   //? print detail on lid-screen
   //? NAME+NUMBER
   detailsName$$.textContent = pokemon.name;
   detailsNumber$$.textContent = `# ${pokemon.id}`;
+  //?TYPES
+  pokemon.types.forEach(type => {
+    const span$$ = document.createElement('span')
+    span$$.textContent = type
+    detailsTypes$$.appendChild(span$$)
+  })
 
   //? IMAGE
   detailsImg$$.src = pokemon.sprites.other["official-artwork"].front_default;

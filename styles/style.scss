@@ -159,10 +159,10 @@ body {
           justify-content: flex-end;
           span {
             background-color: $screen;
-            clip-path: circle(46% at 50% 50%);
+            color: #91faff;
+            margin: 0 1rem;
             display: flex;
-            margin:  0 0.5rem;
-            box-shadow: 0 0 15px #91faff;
+            align-self: center;
           }
         }
 
