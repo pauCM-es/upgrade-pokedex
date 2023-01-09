@@ -1,0 +1,472 @@
+//variables:
+@import 'animations';
+
+$poke-red: #c85152;
+$screen: rgb(28, 37, 70);
+$screen-accent: #91faff;
+
+@import './mini-games_memory';
+
+%flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+%grid-bg {
+  background: $screen;
+  background-image: 
+    linear-gradient(rgba(150, 250, 255, 0.15) 1px, transparent 1px), 
+    linear-gradient(90deg, rgba(150, 250, 255, 0.15) 1px, transparent 1px);
+  background-size: 15px 15px;
+  background-position: -2px -2px, -2px -2px, -1px -1px, -1px -1px;
+}
+
+%screen-btn {
+  padding: 0.5rem 1rem;
+  background-color: rgba(255, 255, 255, 0.058);
+  border: 1px solid $screen-accent;
+  border-radius: 3px;
+  color: $screen-accent;
+  cursor: pointer;
+  &:hover {
+  background-color: rgba(150, 250, 255, 0.76);
+  color: $screen;
+}}
+
+* {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-family: monospace;
+}
+
+body {
+  @extend %flex-center;
+  box-sizing: border-box;
+}
+
+.pokedex {
+  width: 800px;
+  height: 700px;
+  border: 1px solid red;
+  margin-top: 100px;
+  display: flex;
+  flex-wrap: wrap;
+  color: $screen-accent;
+
+
+  // LID
+  &-lid {
+    width: 650px;
+    height: 380px;
+    border-radius: 60px;
+    background-color: $poke-red;
+    position: relative;
+    bottom: -80px;
+    left: 75px;
+    @extend %flex-center;
+
+    //MENU SCREEN
+    #menu__ui {
+      
+      .menu__item {
+        width: 50%;
+        padding: 1rem 0;
+        margin-top: 3rem;
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        justify-content: center;
+        background-color: #91faff36;
+        overflow-y: hidden;
+
+        .screen__btn {
+          @extend %screen-btn;
+          width: 35%;
+          text-align: center;
+          font-size: 2rem;
+          margin: 1rem 0;
+
+        }
+        .games__options {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          border: none;
+          background-color: #91faff6f;
+          
+          
+          .game__opt {
+            position: relative;
+            width: 100%;
+            text-align: center;
+            font-size: 1.3rem;
+            padding: 0.5rem 0;
+            @extend %screen-btn;
+            border: none;
+          }
+        }
+      }
+    }
+
+    .lid-screen {
+      background-color: rgb(47, 47, 47);
+      clip-path: polygon(5% 0, 95% 0, 100% 7%, 100% 93%, 95% 100%, 5% 100%, 0% 93%, 0% 7%);
+      width: calc(100% - 25px);
+      height: 350px;
+      @extend %flex-center;
+
+      &__ui {
+        width: 88%;
+        height: calc(100% - 7%);
+        @extend %grid-bg;
+        border-radius: 3px;
+        box-shadow: inset 0 0 15px rgba(150, 250, 255, 0.831);
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        align-items: center;
+        justify-content: flex-start;
+
+        div {
+          width: 95%;
+          border: 1px solid $screen-accent;
+          border-radius: 4px;
+        }
+      }
+
+      &__header {
+        height: 2.5rem;
+        margin-top: 1rem;
+        display: flex;
+        justify-content: space-between;
+
+        .details {
+          display: flex;
+          align-items: center;
+          margin-left: 1rem;
+
+          p{
+            font-size: 1.5rem;
+            margin-right: 2rem;
+          }
+        }
+
+        .types {
+          height: 100%;
+          margin-right: 1rem;
+          display: flex;
+          justify-content: flex-end;
+          span {
+            background-color: $screen;
+            clip-path: circle(46% at 50% 50%);
+            display: flex;
+            margin:  0 0.5rem;
+            box-shadow: 0 0 15px #91faff;
+          }
+        }
+
+        img {
+          object-fit: contain;
+          height: 86%;
+          filter: brightness(5);
+          align-self: center;
+        }
+      }
+
+      &__body {
+        height: 65%;
+        display: flex;
+
+        .pokemon {
+          width: 40%;
+          // border: 1px solid $screen-accent;
+          
+          &__img {
+            height: 100%;
+            object-fit: cover;
+            scale: 90%;
+            filter: grayscale(90%);
+            background-color: #00000000;
+            mix-blend-mode: luminosity;
+          }
+        }
+
+        .pokemon__details {
+          padding: 0.5rem;
+          overflow-y: scroll;
+          &::-webkit-scrollbar {
+            display: none;
+          }
+
+          h2 {
+            margin: 0.5rem 0;
+          }
+
+          .pokemon__flavors {
+            // height: 65%;
+            margin-top: 1rem;
+            border: none;
+
+            p {
+              margin: 0.5rem 0;
+            }
+          }
+        }
+
+      }
+
+      &__footer {
+        height: 3rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        p {
+          text-align: center;
+          margin: 0 1rem;
+          font-weight: bold;
+        }
+
+        div {
+          height: 80%;
+          width: fit-content;
+          margin: 0 1rem;
+          border: none;
+          display: flex;
+          align-items: center;
+          background-color: rgba(255, 255, 255, 0.058);
+          // border: 1px solid $screen-accent;
+          // border-radius: 3px;
+          color: $screen-accent;
+          cursor: pointer;
+          &:hover {
+            background-color: rgba(150, 250, 255, 0.76);
+            color: $screen;
+          }
+
+          img {
+            height: 80%;
+            margin: 0 1rem;
+          }
+        }
+      }
+
+      
+    }
+  }
+
+  //BODY
+  &-body {
+    width: 100%;
+    height: 500px;
+    background-color: $poke-red;
+    border-radius: 60px;
+    box-shadow: 30px 30px 50px rgba(0, 0, 0, 0.54);;
+
+    align-self: flex-end;
+    display: grid;
+    grid-template-columns: 75px 650px 75px;
+
+    .body {
+      &-sensor {
+        grid-column: 1 / 2;
+        width: 50px;
+        height: 50px;
+        border: 3px solid white;
+        border-radius: 50%;
+        background: radial-gradient(circle at top left, white 4px, #4ebcfb);
+        background-repeat: no-repeat;
+        box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.39), 0 0 10px rgba(0, 0, 0, 0.708) ;
+        margin: 40px 0 0 10px;
+      }
+
+      &-interface {
+        grid-column: 2 / 3;
+        border-left: 10px solid rgba(0, 0, 0, 0.36);
+        border-right: 10px solid rgba(0, 0, 0, 0.36);
+        background-color: rgba(0, 0, 0, 0.232);
+        box-shadow: inset 0 0 25px rgba(0, 0, 0, 0.29);
+        @extend %flex-center;
+        align-items: flex-end;
+      }
+
+      &-screen {
+        background-color: rgb(47, 47, 47);
+        clip-path: polygon(5% 0, 95% 0, 100% 7%, 100% 93%, 95% 100%, 5% 100%, 0% 93%, 0% 7%);
+        width: calc(100% - 15px);
+        height: 350px;
+        margin-bottom: 50px;
+        @extend %flex-center;
+
+        &__ui {
+          width: 88%;
+          height: calc(100% - 7%);
+          @extend %grid-bg;
+          border-radius: 3px;
+          box-shadow: inset 0 0 15px rgba(150, 250, 255, 0.831);
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: flex-start;
+
+        }
+
+        &__search {
+          width: 95%;
+          height: 2.5rem;
+          border-radius: 4px;
+          margin: 1rem 0 0.5rem 0;
+
+           input {
+            background-color: rgba(255, 255, 255, 0);
+            width: 60%;
+            height: 2rem;
+            border-style: none;
+            border: 1px solid $screen-accent;
+            border-radius: 3px;
+            color: $screen-accent;
+            padding-left: 2rem;
+
+            &:focus {
+              box-shadow: 0 0 10px rgba(150, 250, 255);
+              outline: none;
+            }
+          }
+
+        }
+
+        .screen__btn {
+          @extend %screen-btn;
+
+        }
+
+        // POKEMONS__ITEMS
+        .grid {
+          width: 95%;
+          height: 65%;
+          padding: 0.5rem;
+          border: 1px solid $screen-accent;
+          border-radius: 3px;
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0.5rem 0.9rem;
+          overflow-y: scroll;
+          &::-webkit-scrollbar {
+            display: none;
+          }
+
+          span {display:none}
+          
+          .pokemons__item {
+            width: 60px;
+            height: 60px;
+            border: 1px solid $screen-accent;
+            border-radius: 4px;
+            filter: grayscale(80%);
+
+            &:hover {
+              background-color: rgba(150, 250, 255, 0.435);
+              color: $screen;
+              filter: grayscale(0%);
+              scale: 110%;
+
+              img{
+              scale: 120%;
+              }
+            }
+            
+            img {
+              width: inherit;
+              object-fit: contain;
+            }
+
+          }
+        }
+
+        .list {
+          width: 95%;
+          height: 65%;
+          padding: 0.5rem;
+          border: 1px solid $screen-accent;
+          border-radius: 3px;
+          display: flex;
+          flex-direction: column;
+          align-self: center;
+          overflow-y: scroll;
+          &::-webkit-scrollbar {
+            display: none;
+          }
+          .pokemons__item {
+            margin: 0.5rem;
+            &:hover {
+              background-color: rgba(150, 250, 255, 0.435);
+              cursor: pointer;
+              span{
+                font-size: 2.5rem;
+              }
+            }
+          }
+
+          img {display: none}
+
+          span {
+            font-size: 2rem;
+            user-select: none;
+          }
+        }
+        
+
+        &__nav {
+          width: 95%;
+          margin-top: 0.5rem;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+
+          div {
+            height: 25px;
+            @extend %flex-center;
+
+            img{
+              object-fit: contain;
+              height: 100%;
+              
+            }
+          }
+
+          .screen {
+            &__icons {
+              justify-self: flex-start;
+
+              div {
+                margin: 0 1rem;
+
+                p {
+                  margin: 0 0.5rem;
+                  font-size: 1.2rem;
+                }
+              }
+            }
+
+            &__btn {
+              justify-self: flex-end;
+            }
+          }
+        }
+      }
+    }
+  }
+
+
+  .not-seen {
+    filter: brightness(0%);
+  }
+  .legendary {
+    background: radial-gradient(rgb(255 255 0) 2%,#00000000 80%);
+  }
+  .sensor__active {animation: blink 1.33s ease-out infinite;}
+  .display-none {display: none}
+  .hidden {content-visibility: hidden;}
+}
+

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="./styles/style.css">
+  <script src="./elements.js" type="module" defer></script>
+  <script src="./helpers.js" type="module" defer></script>
+  <script src="./pokedex.js" type="module" defer></script>
+  <title>Pokedex</title>
+</head>
+<body>
+  <div class="pokedex">
+
+    <!-- LID -->
+    <section class="pokedex-lid">
+      <div class="lid-screen">
+
+        <!-- DETAILS SCREEN -->
+        <section id="details__ui" class="lid-screen__ui">
+          <div class="lid-screen__header">
+            <span class="details">
+              <p id="details__number" class="poke-number"># 000</p>
+              <h2 id="details__name" class="name">specie's name</h2>
+            </span>
+            <span id="details__types" class="types">
+              <span><img src="./assets/icons/types/120px-Fire_icon_SwSh.png" alt=""></span>
+              <span><img src="./assets/icons/types/120px-Flying_icon_SwSh.png" alt=""></span>
+            </span>
+          </div>
+          <div class="lid-screen__body hidden">
+            <span class="pokemon">
+              <img id="details__img" class="pokemon__img" src="" alt="">
+            </span>
+            <span class="pokemon__details">
+              <h2 id="details__title">Information:</h2>
+              <p id="details__habitat">habitat: </p>
+              <p id="details__color">color: </p>
+              <p id="details__weight">weight: </p>
+              <p id="details__height">height: </p>
+              <div id="details__flavors" class="pokemon__flavors">
+              </div>
+            </span>
+          </div>
+          <div class="lid-screen__footer">
+            <div id="evol-prev__btn">
+              <p id="evol-prev__name">prev</p>
+              <img src="./assets/circle-left.svg" alt="">
+            </div>
+            <p>EVOLUTIONS</p>
+            <div id="evol-next__btn">
+              <img src="./assets/circle-right.svg" alt="">
+              <p id="evol-prev__name">next</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- MENU SCREEN -->
+        <section id="menu__ui" class="lid-screen__ui display-none">
+          <div class="menu__item">
+            <p id="menu-btn__pokedex" class="screen__btn">POKEDEX</p>
+            <p id="menu-btn__games" class="screen__btn">
+              GAMES
+            </p>
+            <div id="game__options" class="games__options hidden">
+              <p class="game__opt">MEMORY</p>
+              <p class="game__opt">WHACK A DIGLETT</p>
+              <p class="game__opt">SNAKE</p>
+            </div>
+            <p id="menu-btn__scanner" class="screen__btn">SCANNER</p>
+          </div>
+        </section>
+
+        <!-- GAMES SCREEN -->
+        <section id="game-lid__ui" class="lid-screen__ui display-none">
+        </section>
+
+        <!-- SCANNER SCREEN -->
+        <section class="lid-screen__scanner display-none">
+        </section>
+      </div>
+    </section>
+
+    <!-- BODY -->
+    <section class="pokedex-body">
+      <div class="body-sensor sensor__active"></div>
+      <div class="body-interface">
+        <div class="body-screen">
+          <!-- SCREEN POKEDEX -->
+          <section id="pokedex__ui" class="body-screen__ui">
+
+            <!-- SEARCH NAV -->
+            <div class="body-screen__search">
+              <form>
+                <input id="search-input" type="text" set autocomplete="off">
+                <button id="search-btn" class="screen__btn">search</button>
+                <button id="filter-btn" class="screen__btn">filters</button>
+              </form>
+            </div>
+
+            <!-- POKEMONS LIST -->
+            <div id="body-screen__pokemons" class="grid">
+            </div>
+
+            <!-- BOTTOM NAV -->
+            <div class="body-screen__nav">
+              <div class="screen__icons">
+                <div class="screen__battery">
+                  <img src="./assets/battery-svgrepo-com.svg" alt="">
+                </div>
+                <div class="screen__caught">
+                  <img src="./assets/pokeball.svg" alt="icono pokeball">
+                  <p id="pokemons-caught"></p>
+                </div>
+                <div class="screen__seen">
+                  <img src="./assets/eye.svg" alt="icono ojo">
+                  <p id="pokemons-seen"></p>
+                </div>
+              </div>
+              <p id="search-results">Found: 000</p>
+              <button id="view-btn" class="screen__btn">list</button>
+              <button id="menu-btn" class="screen__btn">Menu</button>
+            </div>
+          </section>
+
+          <!-- SCREEN RADAR -->
+          <section class="body-screen__radar display-none">
+          </section>
+
+          <!-- SCREEN GAME -->
+          <section id="game-body__ui" class="body-screen__ui display-none">
+
+          </section>
+        </div>
+        <div class="pokedex-body__battery">
+
+        </div>
+      </div>
+    </section>
+  </div>
+  
+</body>
+</html>
