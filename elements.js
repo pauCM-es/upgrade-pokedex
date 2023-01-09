@@ -32,5 +32,5 @@ export const pokemonCaughts$$ = document.querySelector("#pokemons-caught");
 export const pokemonSeen$$ = document.querySelector("#pokemons-seen");
 export const searchResult$$ = document.querySelector("#search-results");
 export const gamesList$$ = document.querySelector("#game__options");
-export const prevEvolName$$ = document.querySelector("#evol-next__name");
+export const prevEvolName$$ = document.querySelector("#evol-prev__name");
 export const nextEvolName$$ = document.querySelector("#evol-next__name");

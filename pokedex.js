@@ -45,6 +45,10 @@ import {bodyScreenPokemons$$,
 import { memoryGame } from "./mini-games_memory.js";
 
 const pokemonsDetails = [];
+let evolutions = {
+  prev: 'prev',
+  next: 'next'
+}
 
 //! MENU
 const showMenu = () => {
@@ -91,10 +95,36 @@ searchInput$$.addEventListener("keyup", () => {
   searchPokemon(searchInput$$);
 });
 
+
 //!Check evolutions
 const checkEvolutions = (pokemon) => {
+  const indexCurrentPokemon = pokemon.id -1
+  const currentPokemon = pokemonsDetails[indexCurrentPokemon]
+  const prevPokemon = pokemonsDetails[indexCurrentPokemon - 1]
+  const nextPokemon = pokemonsDetails[indexCurrentPokemon + 1]
 
+  if (prevPokemon.evolution_forms === currentPokemon.evolution_forms) {
+    prevEvolName$$.textContent = prevPokemon.name
+    evolutions.prev = prevPokemon
+    // console.log(prevPokemon)
+  }else {prevEvolName$$.textContent = "---"}
+
+  if (nextPokemon.evolution_forms === currentPokemon.evolution_forms) {
+    nextEvolName$$.textContent = nextPokemon.name
+    evolutions.next = nextPokemon
+    console.log(evolutions)
+  }else {nextEvolName$$.textContent = "---"}
 }
+prevEvolBtn$$.addEventListener("click", (e)=>{
+  printDetails(e, evolutions.prev)
+  checkEvolutions(evolutions.prev)
+  console.log(evolutions.prev)
+})
+nextEvolBtn$$.addEventListener("click", (e)=>{
+  printDetails(e, evolutions.next)
+  checkEvolutions(evolutions.next)
+  console.log(evolutions.next)
+})
 
 //! start fetching informarion and printing it:
 //*Printing details of the pokemon clicked
@@ -230,6 +260,7 @@ const getAllPokemons = async (pokemonsList) => {
     pokeItem$$.addEventListener("click", (e) => {
       //parameter => pokemon on the pokemonDetails array, not the fetch result
       printDetails(e, pokemonInArray);
+      checkEvolutions(pokemonInArray)
     });
   }
   pokemonCaughts$$.textContent = captures;
