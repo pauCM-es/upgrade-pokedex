@@ -122,29 +122,47 @@ export const memoryGame = (elementToAppend, elementTwoToAppend, list) => {
     e.preventDefault();
   };
 
-  const startCountDown = (secondsTimer) => {
-    const countDown = setInterval(() => {
-      secondsTimer--
-      pTimer$$.textContent = secondsTimer
-      if (secondsTimer === 0){
-        isGameOver = true
-        console.log("timer's up!!!  ", isGameOver)
-        checkGameOver()
-      }
-    }, 1000);
-    return countDown
-  }
+  // const startCountDown = (secondsTimer) => {
+  //   const countDown = setInterval(() => {
+  //     secondsTimer--
+  //     pTimer$$.textContent = secondsTimer
+  //     if (secondsTimer === 0){
+  //       isGameOver = true
+  //       console.log("timer's up!!!  ", isGameOver)
+  //       checkGameOver()
+  //     }
+  //   }, 1000);
+  //   return countDown
+  // }
+
+//   let numero = 10;
+
+// const intervalo = setInterval(() => {
+//     console.log(numero);
+//     numero--;
+//     comprobar(numero);
+// }, 1000);
+
+// const comprobar = (numero) => {
+
+//     if (numero === 0) {
+
+//         clearInterval(intervalo)
+
+//     }
+
+// }
   
   const checkGameOver = () => {
     score === numCards * 10 ? isGameOver = true : isGameOver = false
-    secondsTimer === 0 ? isGameOver = true : isGameOver = false
+    // secondsTimer === 0 ? isGameOver = true : isGameOver = false
     console.log("GAME OVER")
-    if (isGameOver) {
-      clearInterval(countDown)
-      timer$$.classList.toggle("active")
-      document.querySelectorAll(".card__face--back").forEach(card => card.addEventListener("click", stopClicks, true))
-      secondsTimer = countDownStart
-    }
+    // if (isGameOver) {
+    //   clearInterval(countDown)
+    //   timer$$.classList.toggle("active")
+    //   document.querySelectorAll(".card__face--back").forEach(card => card.addEventListener("click", stopClicks, true))
+    //   secondsTimer = countDownStart
+    // }
   }
 
   const flipCard = (e) => {
@@ -158,10 +176,10 @@ export const memoryGame = (elementToAppend, elementTwoToAppend, list) => {
         document.removeEventListener("click", stopClicks, true);
       }, 1000);
     }else {console.log("card already guessed")}
-    if (!hasClass(timer$$, "active")) {
-      countDown = startCountDown(secondsTimer)
-      timer$$.classList.toggle("active")
-    }
+    // if (!hasClass(timer$$, "active")) {
+    //   countDown = startCountDown(secondsTimer)
+    //   timer$$.classList.toggle("active")
+    // }
   }
 
   const compareCards = (e) => {

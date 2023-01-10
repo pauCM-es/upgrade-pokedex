@@ -153,15 +153,14 @@ body {
         }
 
         .types {
+          display: flex;
           height: 100%;
           margin-right: 1rem;
-          display: flex;
           justify-content: flex-end;
           span {
             background-color: $screen;
             color: #91faff;
             margin: 0 1rem;
-            display: flex;
             align-self: center;
           }
         }
@@ -334,6 +333,41 @@ body {
             }
           }
 
+          .filter-nav {
+            display: flex;
+            flex-wrap: wrap;
+            border: 1px solid #91faff;
+            background-color: $screen;
+            border-radius: 4px;
+            height: fit-content;
+            width: 97%;
+            z-index: 5;
+            position: relative;
+            margin-top: 5px;
+            transform: scaleY(0);
+            transition: transform 150ms ease-in-out;
+            transform-origin: top;
+
+            span {
+              padding: 0.5rem;
+              border-radius: 3px;
+              &:hover {
+                background-color: #91faffc1;
+                color: $screen;
+                cursor: pointer;
+              }
+
+            }
+            .active {
+              background-color: #91faffc1;
+              color: $screen;
+            }
+          }
+          
+          .showDown {
+            transform:  scaleY(1);
+          }
+
         }
 
         .screen__btn {
@@ -468,5 +502,6 @@ body {
   .sensor__active {animation: blink 1.33s ease-out infinite;}
   .display-none {display: none}
   .hidden {content-visibility: hidden;}
+  
 }
 

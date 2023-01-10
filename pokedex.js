@@ -18,10 +18,12 @@ import {bodyScreenPokemons$$,
   viewBtn$$,
   menuBtn$$,
   searchBtn$$,
+  filtersBtn$$ ,
   menuBtnPokedex$$,
   menuBtnGames$$,
   menuBtnScanner$$,
   searchInput$$,
+  filterNav$$,
   detailsBody$$,
   detailsName$$,
   detailsNumber$$,
@@ -42,16 +44,19 @@ import {bodyScreenPokemons$$,
   nextEvolName$$,
 } from "./elements.js"
 
-import { memoryGame } from "./mini-games_memory.js";
+import { memoryGame } from "./mini-games_memory.js"
+
+
 
 const pokemonsDetails = [];
 let evolutions = {
   prev: 'prev',
   next: 'next'
 }
+const typesFilters = []
 
-//! MENU
-const showMenu = () => {
+//! MENU-----------------------------------------------------------------
+export const showMenu = () => {
   if (hasClass(gameLidScreen$$, "display-none")) {
     toggleClasses(menuScreen$$, ["display-none"]);
     toggleClasses(detailsScreen$$, ["display-none"]);
@@ -60,43 +65,43 @@ const showMenu = () => {
     toggleClasses(gameLidScreen$$, ["display-none"]);
   }
 };
-menuBtn$$.addEventListener("click", showMenu);
-menuBtnGames$$.addEventListener("click", () => {
-  toggleClasses(gamesList$$, ["hidden"]);
-});
 
-//! Filter - search
-viewBtn$$.addEventListener("click", (e) => {
-  toggleClasses(bodyScreenPokemons$$, ["grid", "list"]);
-  if (e.target.textContent === "grid") {
-    viewBtn$$.textContent = "list";
-  } else {
-    viewBtn$$.textContent = "grid";
-  }
-});
 
+//! SEARCH--------------------------------------------------------------
 const searchPokemon = (input) => {
   const filter = input.value;
   let searchResults = 0;
-  for (let i = 0; i < pokemonsDetails.length; i++) {
-    const pkm = pokemonsDetails[i];
-    const searchTarget = pkm.name;
+  for (const pokemon of pokemonsDetails) {
+    const searchTarget = pokemon.name;
     if (!searchTarget.includes(filter)) {
-      document.getElementById(pkm.id).classList.add("display-none");
+      document.getElementById(pokemon.id).classList.add("display-none");
     } else {
-      document.getElementById(pkm.id).classList.remove("display-none");
+      document.getElementById(pokemon.id).classList.remove("display-none");
       searchResults++;
     }
   }
   searchResult$$.textContent = `Found: ${threeDigitNumber(searchResults)}`;
 };
 
-searchInput$$.addEventListener("keyup", () => {
-  searchPokemon(searchInput$$);
-});
+//! FILTERS-------------------------------------------------------------
+const filterPokemon = (filter) => {
+  let searchResults = 0;
+  for (pokemon of pokemonsDetails) {
+    const searchTarget = pokemon.types;
 
+    if (!searchTarget.includes(filter)) {
+      document.getElementById(pokemon.id).classList.add("display-none");
+    } else {
+      document.getElementById(pokemon.id).classList.remove("display-none");
+      searchResults++;
+    }
+  }
+  searchResult$$.textContent = `Found: ${threeDigitNumber(searchResults)}`;
+};
 
-//!Check evolutions
+//! CHECK EVOLUTIONS-----------------------------------------------------
+//it compairs the evolutionChain propierty (url) of the previous and the next pokemon
+// if === they belong to the same evolution group. 
 const checkEvolutions = (pokemon) => {
   const indexCurrentPokemon = pokemon.id -1
   const currentPokemon = pokemonsDetails[indexCurrentPokemon]
@@ -113,37 +118,30 @@ const checkEvolutions = (pokemon) => {
     evolutions.next = nextPokemon
   }else {nextEvolName$$.textContent = "---"}
 }
-prevEvolBtn$$.addEventListener("click", (e)=>{
-  printDetails(e, evolutions.prev)
-  checkEvolutions(evolutions.prev)
-})
-nextEvolBtn$$.addEventListener("click", (e)=>{
-  printDetails(e, evolutions.next)
-  checkEvolutions(evolutions.next)
-})
 
-//! start fetching informarion and printing it:
-//*Printing details of the pokemon clicked
+//! PRINT DETAILS of clicked pokemon-------------------
 const printDetails = (e, pokemon) => {
   detailsBody$$.classList.remove("hidden");
 
-  //? removes previous entries
+  //* removes previous entries------------------------
   removeElements(detailsFlavors$$, ".entry");
   removeElements(detailsTypes$$, "span");
 
-  //? print detail on lid-screen
+  //* print detail on lid-screen----------------------
   //? NAME+NUMBER
   detailsName$$.textContent = pokemon.name;
   detailsNumber$$.textContent = `# ${pokemon.id}`;
-  //?TYPES
+
+  //? TYPES
   pokemon.types.forEach(type => {
     const span$$ = document.createElement('span')
     span$$.textContent = type
-    detailsTypes$$.appendChild(span$$)
+    detailsTypes$$.appendChild(span$$) 
   })
 
   //? IMAGE
   detailsImg$$.src = pokemon.sprites.other["official-artwork"].front_default;
+
   //? INFORMATION
   detailsHabitat$$.textContent = `Habitat: ${pokemon.habitat}`;
   detailsWeight$$.textContent = `Weight: ${pokemon.weight}`;
@@ -156,9 +154,9 @@ const printDetails = (e, pokemon) => {
     detailsFlavors$$.appendChild(p$$);
   });
 
-
 };
 
+//! start fetching informarion and printing it:------------------
 //*more data about the species to use after getting all pokemons
 const getSpecieData = async (pokemon) => {
   const response = await fetch(pokemon.species.url);
@@ -197,7 +195,7 @@ const getSpecieData = async (pokemon) => {
   return data;
 };
 
-//*get all pokemons details and saving in an Array after fetching the list. Then print information.
+//*get all pokemons details and saving in an Array after fetching the list. Then print information for that pokemon.
 const getAllPokemons = async (pokemonsList) => {
   let captures = 0;
   let sights = 0;
@@ -259,6 +257,20 @@ const getAllPokemons = async (pokemonsList) => {
     pokemonInArray.caught === true && captures++;
     pokemonInArray.seen === true && sights++;
 
+    //? print (all existing types) filters
+    pokemonInArray.types.forEach(type => {
+      if (!typesFilters.includes(type)) {
+        typesFilters.push(type) 
+        const span$$ = document.createElement("span")
+        span$$.textContent = type
+        filterNav$$.appendChild(span$$)
+        span$$.addEventListener("click", (e)=>{
+          console.log(e)
+          span$$.classList.toggle("active")
+        })
+      }
+    })
+
     //?click on pokeItem$$
     pokeItem$$.addEventListener("click", (e) => {
       //parameter => pokemon on the pokemonDetails array, not the fetch result
@@ -270,21 +282,57 @@ const getAllPokemons = async (pokemonsList) => {
   pokemonSeen$$.textContent = sights;
 };
 
-//* fetching the pokemons from the api
+//* fetching the pokemons urls from the api
+const getPokemonList =  async () => {
+  const response = await fetch("https://pokeapi.co/api/v2/pokemon?offset=0&limit=151")
+  const result = await response.json()
+  const pokemonList = result.results.map((pokemon) => {
+          return pokemon;
+  })
 
-fetch("https://pokeapi.co/api/v2/pokemon?offset=0&limit=151")
-  .then((res) => res.json())
-  .then((res) => {
-    const pokemons = res.results.map((pokemon) => {
-      return pokemon;
-    });
+  getAllPokemons(pokemonList)
+}
 
-    getAllPokemons(pokemons);
-  });
+getPokemonList()
 
+//!----------------------------------------------------
 
+menuBtn$$.addEventListener("click", showMenu);
+menuBtnGames$$.addEventListener("click", () => {
+  toggleClasses(gamesList$$, ["hidden"]);
+});
 
-//! MINIGAMES
+viewBtn$$.addEventListener("click", (e) => {
+  toggleClasses(bodyScreenPokemons$$, ["grid", "list"]);
+  if (e.target.textContent === "grid") {
+    viewBtn$$.textContent = "list";
+  } else {
+    viewBtn$$.textContent = "grid";
+  }
+});
+
+searchInput$$.addEventListener("keyup", () => {
+  searchPokemon(searchInput$$);
+});
+
+filtersBtn$$.addEventListener("click", (e) => {
+  e.preventDefault()
+  toggleClasses(filterNav$$, ["showDown"])
+  // if (filterNav$$.style.display === "none" || filterNav$$.style.display === "") {
+  //   filterNav$$.style.display = "flex"
+  // } else {filterNav$$.style.display = "none"}
+})
+
+prevEvolBtn$$.addEventListener("click", (e)=>{
+  printDetails(e, evolutions.prev)
+  checkEvolutions(evolutions.prev)
+})
+nextEvolBtn$$.addEventListener("click", (e)=>{
+  printDetails(e, evolutions.next)
+  checkEvolutions(evolutions.next)
+})
+
+//! MINIGAMES----------------------------------------------------
 const showGameScreen = () => {
   toggleClasses(bodyPokedexScreen$$, ["display-none"]);
   toggleClasses(gameLidScreen$$, ["display-none"]);

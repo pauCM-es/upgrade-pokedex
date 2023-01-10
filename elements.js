@@ -11,6 +11,7 @@ export const menuScreen$$ = document.querySelector("#menu__ui");
 export const viewBtn$$ = document.querySelector("#view-btn");
 export const menuBtn$$ = document.querySelector("#menu-btn");
 export const searchBtn$$ = document.querySelector("#search-btn");
+export const filtersBtn$$ = document.querySelector("#filter-btn");
 export const menuBtnPokedex$$ = document.querySelector("#menu-btn__pokedex");
 export const menuBtnGames$$ = document.querySelector("#menu-btn__games");
 export const menuBtnScanner$$ = document.querySelector("#menu-btn__scanner");
@@ -18,6 +19,7 @@ export const prevEvolBtn$$ = document.querySelector("#evol-prev__btn");
 export const nextEvolBtn$$ = document.querySelector("#evol-next__btn");
 
 export const searchInput$$ = document.querySelector("#search-input");
+export const filterNav$$ = document.querySelector(".filter-nav");
 export const detailsBody$$ = document.querySelector(".lid-screen__body");
 export const detailsName$$ = document.querySelector("#details__name");
 export const detailsNumber$$ = document.querySelector("#details__number");
