@@ -270,7 +270,7 @@ const getAllPokemons = async (pokemonsList) => {
         })
       }
     })
-
+    
     //?click on pokeItem$$
     pokeItem$$.addEventListener("click", (e) => {
       //parameter => pokemon on the pokemonDetails array, not the fetch result
@@ -278,8 +278,14 @@ const getAllPokemons = async (pokemonsList) => {
       checkEvolutions(pokemonInArray)
     });
   }
+
   pokemonCaughts$$.textContent = captures;
   pokemonSeen$$.textContent = sights;
+  console.log(typesFilters)
+  typesFilters.forEach(type => {
+    type = {[type]: false}
+  })
+  console.log(typesFilters)
 };
 
 //* fetching the pokemons urls from the api
@@ -295,7 +301,7 @@ const getPokemonList =  async () => {
 
 getPokemonList()
 
-//!----------------------------------------------------
+//! ACTIONS outside of the pokemons items----------------------------
 
 menuBtn$$.addEventListener("click", showMenu);
 menuBtnGames$$.addEventListener("click", () => {
@@ -318,9 +324,6 @@ searchInput$$.addEventListener("keyup", () => {
 filtersBtn$$.addEventListener("click", (e) => {
   e.preventDefault()
   toggleClasses(filterNav$$, ["showDown"])
-  // if (filterNav$$.style.display === "none" || filterNav$$.style.display === "") {
-  //   filterNav$$.style.display = "flex"
-  // } else {filterNav$$.style.display = "none"}
 })
 
 prevEvolBtn$$.addEventListener("click", (e)=>{
