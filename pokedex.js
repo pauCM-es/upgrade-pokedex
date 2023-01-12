@@ -79,7 +79,8 @@ const searchPokemon = (input) => {
   let searchResults = 0;
   for (const pokemon of pokemonsDetails) {
     const searchTarget = pokemon.name;
-    if (!searchTarget.includes(filter)) {
+    const searchTarget2 = pokemon.id
+    if (!searchTarget.includes(filter) && !searchTarget2.includes(filter)) {
       document.getElementById(pokemon.id).classList.add("display-none");
     } else {
       document.getElementById(pokemon.id).classList.remove("display-none");
@@ -362,7 +363,7 @@ viewBtn$$.addEventListener("click", (e) => {
 });
 
 //? SEARCH INPUT==========================================
-searchInput$$.addEventListener("keyup", () => {
+searchInput$$.addEventListener("input", () => {
   searchPokemon(searchInput$$);
 });
 
