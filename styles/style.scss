@@ -7,6 +7,7 @@ $screen-accent: #91faff;
 
 @import './mini-games_memory';
 @import './mini-games_whack';
+@import './easter-egg';
 
 %flex-center {
   display: flex;
@@ -44,11 +45,25 @@ $screen-accent: #91faff;
 body {
   @extend %flex-center;
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+}
+
+.wild-pokemon {
+  width: 100px;
+  height: 100px;
+  position: absolute;
+  top: 2rem;
+  
+  img {
+    width: 100%;
+  }
 }
 
 .pokedex {
   width: 800px;
-  height: 700px;
+  // height: 700px;
   margin-top: 100px;
   display: flex;
   flex-wrap: wrap;
@@ -316,6 +331,10 @@ body {
           height: 2.5rem;
           border-radius: 4px;
           margin: 1rem 0 0.5rem 0;
+          ::placeholder{
+            color: rgba(255, 255, 255, 0.704);
+            font-size: 1.1rem;
+          }
 
            input {
             background-color: rgba(255, 255, 255, 0);
@@ -417,6 +436,10 @@ body {
               object-fit: contain;
             }
 
+            
+          }
+          .not-seen img {
+            filter: brightness(0%);
           }
         }
 
@@ -495,15 +518,13 @@ body {
   }
 
 
-  .not-seen {
-    filter: brightness(0%);
-  }
   .legendary {
     background: radial-gradient(rgb(255 255 0) 2%,#00000000 80%);
   }
   .sensor__active {animation: blink 1.33s ease-out infinite;}
   .display-none {display: none}
   .hidden {content-visibility: hidden;}
+  
   
 }
 

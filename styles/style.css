@@ -219,11 +219,23 @@
 
 body {
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+}
+
+.wild-pokemon {
+  width: 100px;
+  height: 100px;
+  position: absolute;
+  top: 2rem;
+}
+.wild-pokemon img {
+  width: 100%;
 }
 
 .pokedex {
   width: 800px;
-  height: 700px;
   margin-top: 100px;
   display: flex;
   flex-wrap: wrap;
@@ -445,6 +457,18 @@ body {
   border-radius: 4px;
   margin: 1rem 0 0.5rem 0;
 }
+.pokedex-body .body-screen__search ::-moz-placeholder {
+  color: rgba(255, 255, 255, 0.704);
+  font-size: 1.1rem;
+}
+.pokedex-body .body-screen__search :-ms-input-placeholder {
+  color: rgba(255, 255, 255, 0.704);
+  font-size: 1.1rem;
+}
+.pokedex-body .body-screen__search ::placeholder {
+  color: rgba(255, 255, 255, 0.704);
+  font-size: 1.1rem;
+}
 .pokedex-body .body-screen__search input {
   background-color: rgba(255, 255, 255, 0);
   width: 60%;
@@ -532,6 +556,9 @@ body {
   -o-object-fit: contain;
      object-fit: contain;
 }
+.pokedex-body .body-screen .grid .not-seen img {
+  filter: brightness(0%);
+}
 .pokedex-body .body-screen .list {
   width: 95%;
   height: 65%;
@@ -593,9 +620,6 @@ body {
 }
 .pokedex-body .body-screen__nav .screen__btn {
   justify-self: flex-end;
-}
-.pokedex .not-seen {
-  filter: brightness(0%);
 }
 .pokedex .legendary {
   background: radial-gradient(rgb(255, 255, 0) 2%, rgba(0, 0, 0, 0) 80%);

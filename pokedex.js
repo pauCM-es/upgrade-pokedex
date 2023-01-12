@@ -47,6 +47,7 @@ import {bodyScreenPokemons$$,
 import { memoryGame } from "./mini-games_memory.js"
 import { whackGame } from "./mini-games_whack.js"
 
+
 let limitOfPokemons = 151
 const pokemonsDetails = [];
 let evolutions = {
@@ -57,9 +58,49 @@ let typesFilters = []
 let captures = 0;
 let sights = 0;
 let filtersUsed = []
+let randomIds = []
+let clicks = 0
 
 // limitOfPokemons = prompt("Hasta que pokemon quieres ver?", 151)
 // if (!limitOfPokemons > 1 && limitOfPokemons < 1010) alert("otra vez, plis...")
+
+
+// to register at the pokedex
+const caught = (pokemonWild) => {
+  const pokeItem$$ = document.getElementById(pokemonWild.id)
+  pokemonWild.seen = true
+  toggleClasses(pokeItem$$ ,["seen", "not-seen"])
+  sights = 0
+  pokemonsDetails.forEach(pokemon => {
+    pokemon.seen && sights++
+  })
+  pokemonSeen$$.textContent = sights
+}
+
+// A wild, unseen, pokemon appears
+const wildPokemon = (pokemon ) => {
+  clicks = 0
+  const imgUrl = pokemon.sprites.versions["generation-v"]["black-white"].animated
+  const images = ['front_default', 'front_shiny', 'back_default', 'back_shiny']
+
+  const wildPokemon$$ = document.createElement('div')
+  wildPokemon$$.className = 'wild-pokemon'
+  wildPokemon$$.innerHTML = 
+      `<div class="wild">
+        <img src="${pokemon.sprites.versions["generation-v"]["black-white"].animated.front_default}" alt="imagen de pokemon salvage">
+      </div>`
+  const body$$ = document.querySelector('body')
+  body$$.appendChild(wildPokemon$$)
+
+  wildPokemon$$.addEventListener("click", () => {
+    caught(pokemon)
+  })
+
+  setTimeout(() => {
+    wildPokemon$$.remove()
+  }, 10000);
+}
+
 
 //! MENU-----------------------------------------------------------------
 export const showMenu = () => {
@@ -72,6 +113,13 @@ export const showMenu = () => {
   }
 };
 
+const randomNotSeen = (amount) => {
+  for (let i = 0; i < amount; i++) {
+    randomIds.push(threeDigitNumber(randomNumber(0, limitOfPokemons)))
+  }
+  console.log(randomIds)
+}
+randomNotSeen(2)
 
 //! SEARCH--------------------------------------------------------------
 const searchPokemon = (input) => {
@@ -229,17 +277,23 @@ const printDetails = (e, pokemon) => {
     `
     bodyScreenPokemons$$.appendChild(pokeItem$$);
     
-    pokemon.caught === true && pokeItem$$.classList.add("caught");
-    pokemon.seen === true && pokeItem$$.classList.add("seen");
-    pokemon.legendary === true && pokeItem$$.classList.add("legendary");
+    pokemon.caught && pokeItem$$.classList.add("caught");
+    pokemon.seen ? pokeItem$$.classList.add("seen") : pokeItem$$.classList.add("not-seen")
+    pokemon.legendary && pokeItem$$.classList.add("legendary");
 
     
     //?click on pokeItem$$
+    if(pokemon.seen) {  // if the pokemon's not register => can not see the data
     pokeItem$$.addEventListener("click", (e) => {
       //parameter => pokemon on the pokemonDetails array, not the fetch result
       printDetails(e, pokemon);
       checkEvolutions(pokemon)
-    });
+    })} else {
+      pokeItem$$.addEventListener('click', (e)=> {
+        clicks++
+        clicks === 3 && wildPokemon(pokemon)
+      })
+    }
   }
 
 
@@ -316,7 +370,7 @@ const getAllPokemons = async (limitPokemons) => {
       types: typesList,
       ...specieData,
       caught: false,
-      seen: true,
+      seen: !randomIds.includes(newId), // 
       display: true
     });
       const pokemonInArray = pokemonsDetails.filter(
@@ -333,6 +387,8 @@ const getAllPokemons = async (limitPokemons) => {
   getBtnsFilters(pokemonsDetails)
   pokemonCaughts$$.textContent = captures;
   pokemonSeen$$.textContent = sights;
+
+
   console.log(pokemonsDetails)
   
 }
@@ -428,3 +484,7 @@ gameStartBtn$$[1].addEventListener("click", (e) => {
 
 
 
+
+// `<iframe src="https://giphy.com/embed/U2nN0ridM4lXy" width="480" height="334" frameBorder="0" class="giphy-embed" allowFullScreen></iframe>`
+// `<iframe src="https://giphy.com/embed/LxSFsOTa3ytEY" width="480" height="360" frameBorder="0" class="giphy-embed" allowFullScreen></iframe>`
+// `<iframe src="https://giphy.com/embed/i1WOZqCGWdLMI" width="480" height="360" frameBorder="0" class="giphy-embed" allowFullScreen></iframe>`
