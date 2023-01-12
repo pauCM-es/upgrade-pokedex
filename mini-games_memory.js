@@ -133,8 +133,6 @@ export const memoryGame = (elementToAppend, elementTwoToAppend, list) => {
   const restartGame = () => {
     console.log("RESTARTING GAME...")
     removeElements(cardsSpace$$, "div")
-    // document.querySelectorAll(".block").forEach(card => card.remove())
-    // clearInterval(timerInterval)
     secondsTimer = countDownStart
     timerSeconds$$.textContent = countDownStart
     score = 0

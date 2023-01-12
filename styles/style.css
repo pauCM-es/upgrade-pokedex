@@ -128,6 +128,62 @@
   gap: 10px 10px;
 }
 
+.miniGame-whack {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.miniGame-whack h2 {
+  margin: 1rem 0;
+}
+.miniGame-whack .game-space {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0 1rem;
+}
+.miniGame-whack .block {
+  width: 25%;
+  height: 35%;
+  display: flex;
+  justify-content: center;
+  border: 1px solid white;
+}
+.miniGame-whack .block-whack {
+  height: 100%;
+}
+.miniGame-whack .whack-dirt {
+  width: 100%;
+  position: relative;
+  z-index: 5;
+  align-self: flex-end;
+}
+.miniGame-whack .whack-dirt img {
+  width: 100%;
+}
+.miniGame-whack .whack-pokemon {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  height: 0%;
+  transition: height 100ms;
+  z-index: 3;
+  position: relative;
+}
+.miniGame-whack .whack-pokemon img {
+  width: 60%;
+  filter: grayscale(90%) invert(63%) sepia(49%) saturate(297%) hue-rotate(170deg);
+  background-color: rgba(128, 171, 216, 0);
+  mix-blend-mode: color-burn;
+}
+.miniGame-whack .up {
+  height: 90%;
+}
+
 .pokedex-body .body-screen__nav div, .pokedex-body .body-screen, .pokedex-body .body-interface, .pokedex-lid .lid-screen, .pokedex-lid, body, #game-body__ui .miniGame-memory .card__face--back {
   display: flex;
   align-items: center;

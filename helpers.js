@@ -62,3 +62,30 @@ export const shuffle = (arrayToShuffle) => {
   return shuffled
 }
 
+export const stopClicks = (e) => {
+  e.stopPropagation();
+  e.preventDefault();
+};
+
+export const checkTimer = (numero) => {
+  if (numero === 0) {
+    isGameOver = true
+    timerIsActive = false
+    return true
+  }
+}
+
+export const startCountDown = (seconds) => {
+  interval = setInterval(() => {
+    console.log(seconds);
+    seconds--;
+    timerSeconds$$.textContent = seconds
+    checkTimer(seconds) && clearInterval(interval)
+}, 1000);
+}
+
+export const getElement = (selector) => {
+  const element = document.querySelector(selector)
+  return element
+}
+

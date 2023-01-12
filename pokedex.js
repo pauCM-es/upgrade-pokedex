@@ -6,7 +6,7 @@ import {
   threeDigitNumber,
   toggleClasses,
   getRandomItems,
-  shuffle
+  getElement,
 } from "./helpers.js";
 
 import {bodyScreenPokemons$$,
@@ -45,6 +45,7 @@ import {bodyScreenPokemons$$,
 } from "./elements.js"
 
 import { memoryGame } from "./mini-games_memory.js"
+import { whackGame } from "./mini-games_whack.js"
 
 
 
@@ -53,7 +54,8 @@ let evolutions = {
   prev: 'prev',
   next: 'next'
 }
-const typesFilters = []
+let typesFilters = []
+let pokemonsFiltered = []
 
 //! MENU-----------------------------------------------------------------
 export const showMenu = () => {
@@ -84,9 +86,11 @@ const searchPokemon = (input) => {
 };
 
 //! FILTERS-------------------------------------------------------------
-const filterPokemon = (filter) => {
+const filterPokemon = (e) => {
+  const filter = e.target.textContent
+  console.log(filter)
   let searchResults = 0;
-  for (pokemon of pokemonsDetails) {
+  for (const pokemon of pokemonsDetails) {
     const searchTarget = pokemon.types;
 
     if (!searchTarget.includes(filter)) {
@@ -98,6 +102,31 @@ const filterPokemon = (filter) => {
   }
   searchResult$$.textContent = `Found: ${threeDigitNumber(searchResults)}`;
 };
+
+const getBtnsFilters = (list) => {
+  for(const pokemon of list) {
+    pokemon.types.forEach(type => {
+    
+      if (typesFilters[type] === undefined) {
+
+        //Propierty of filter active: true/false
+        typesFilters[type] = false
+        
+        //html Btn element
+        const span$$ = document.createElement("span")
+        span$$.textContent = type
+        filterNav$$.appendChild(span$$)
+        
+        //Functionality
+        span$$.addEventListener("click", (e)=>{
+          span$$.classList.toggle("active")
+          typesFilters[e.target.textContent] = !typesFilters[e.target.textContent]
+          filterPokemon(e)
+        })
+      }
+    })
+  }
+} 
 
 //! CHECK EVOLUTIONS-----------------------------------------------------
 //it compairs the evolutionChain propierty (url) of the previous and the next pokemon
@@ -156,8 +185,20 @@ const printDetails = (e, pokemon) => {
 
 };
 
-//! start fetching informarion and printing it:------------------
-//*more data about the species to use after getting all pokemons
+
+
+
+
+
+
+
+
+
+
+//! FETCH FOR POKEMONS DATA AND PRINT:----------------------
+
+
+//*more data about the species to use after getting all pokemons-----
 const getSpecieData = async (pokemon) => {
   const response = await fetch(pokemon.species.url);
   const resultData = await response.json();
@@ -195,7 +236,11 @@ const getSpecieData = async (pokemon) => {
   return data;
 };
 
-//*get all pokemons details and saving in an Array after fetching the list. Then print information for that pokemon.
+
+
+
+//* get all pokemons details and saving in an Array after fetching the list. 
+//* Then print information for that pokemon.--------------------------------
 const getAllPokemons = async (pokemonsList) => {
   let captures = 0;
   let sights = 0;
@@ -222,54 +267,36 @@ const getAllPokemons = async (pokemonsList) => {
       ...specieData,
       caught: false,
       seen: true,
+      display: true
     });
-
+    
+    //? PRINT POKE ITEM -------------------------------------------------
+    //pokemonInArray is the one with all the data after merging the second fetch
     const pokemonInArray = pokemonsDetails.filter(
       (pkm) => pkm.name === pokemon.name
     )[0];
 
-    //? print pokemons GRID on body-screen
     const pokeItem$$ = document.createElement("div");
-    const pokeItem_Img$$ = document.createElement("img");
     pokeItem$$.className = `pokemons__item`;
+    pokeItem$$.id = pokemonInArray.id;
     pokemonInArray.types.forEach(type => {
       pokeItem$$.classList.add(type)
     })
-    pokeItem$$.id = pokemonInArray.id;
-    pokeItem_Img$$.src = pokemonInArray.sprites.front_default;
-    pokeItem$$.appendChild(pokeItem_Img$$);
+    pokeItem$$.innerHTML = 
+    `
+    <img src="${pokemonInArray.sprites.front_default}"/>
+    <span>${pokemonInArray.id} - </span>
+    <span>${pokemonInArray.name}</span>
+    `
     bodyScreenPokemons$$.appendChild(pokeItem$$);
-
+    
     pokemonInArray.caught === true && pokeItem$$.classList.add("caught");
     pokemonInArray.seen === true && pokeItem$$.classList.add("seen");
     pokemonInArray.legendary === true && pokeItem$$.classList.add("legendary");
 
-    //? print pokemons LIST on body-screen but HIDDEN
-    const pokeItem_name$$ = document.createElement("span");
-    const pokeItem_number$$ = document.createElement("span");
-    pokeItem_name$$.textContent = pokemonInArray.name;
-    pokeItem_number$$.textContent = `${pokemonInArray.id} - `;
-    pokeItem$$.appendChild(pokeItem_number$$);
-    pokeItem$$.appendChild(pokeItem_name$$);
-    bodyScreenPokemons$$.appendChild(pokeItem$$);
-
     //? show caught/seen indicator
     pokemonInArray.caught === true && captures++;
     pokemonInArray.seen === true && sights++;
-
-    //? print (all existing types) filters
-    pokemonInArray.types.forEach(type => {
-      if (!typesFilters.includes(type)) {
-        typesFilters.push(type) 
-        const span$$ = document.createElement("span")
-        span$$.textContent = type
-        filterNav$$.appendChild(span$$)
-        span$$.addEventListener("click", (e)=>{
-          console.log(e)
-          span$$.classList.toggle("active")
-        })
-      }
-    })
     
     //?click on pokeItem$$
     pokeItem$$.addEventListener("click", (e) => {
@@ -278,17 +305,14 @@ const getAllPokemons = async (pokemonsList) => {
       checkEvolutions(pokemonInArray)
     });
   }
-
+  getBtnsFilters(pokemonsDetails)
   pokemonCaughts$$.textContent = captures;
   pokemonSeen$$.textContent = sights;
-  console.log(typesFilters)
-  typesFilters.forEach(type => {
-    type = {[type]: false}
-  })
-  console.log(typesFilters)
 };
 
-//* fetching the pokemons urls from the api
+
+
+//* fetching the pokemons urls from the api ----------------------
 const getPokemonList =  async () => {
   const response = await fetch("https://pokeapi.co/api/v2/pokemon?offset=0&limit=151")
   const result = await response.json()
@@ -301,13 +325,25 @@ const getPokemonList =  async () => {
 
 getPokemonList()
 
+
+
+
+
+
+
+
+
+
+
 //! ACTIONS outside of the pokemons items----------------------------
 
+//? MENU BTN
 menuBtn$$.addEventListener("click", showMenu);
 menuBtnGames$$.addEventListener("click", () => {
   toggleClasses(gamesList$$, ["hidden"]);
 });
 
+//? CHANGE VIEW GRID/LIST
 viewBtn$$.addEventListener("click", (e) => {
   toggleClasses(bodyScreenPokemons$$, ["grid", "list"]);
   if (e.target.textContent === "grid") {
@@ -317,15 +353,18 @@ viewBtn$$.addEventListener("click", (e) => {
   }
 });
 
+//? SEARCH INPUT
 searchInput$$.addEventListener("keyup", () => {
   searchPokemon(searchInput$$);
 });
 
+//? TYPES FILTERS NAV
 filtersBtn$$.addEventListener("click", (e) => {
   e.preventDefault()
-  toggleClasses(filterNav$$, ["showDown"])
+  toggleClasses(filterNav$$, ["showDown"])  
 })
 
+//? EVOLUTIONS BTNS
 prevEvolBtn$$.addEventListener("click", (e)=>{
   printDetails(e, evolutions.prev)
   checkEvolutions(evolutions.prev)
@@ -334,6 +373,8 @@ nextEvolBtn$$.addEventListener("click", (e)=>{
   printDetails(e, evolutions.next)
   checkEvolutions(evolutions.next)
 })
+
+
 
 //! MINIGAMES----------------------------------------------------
 const showGameScreen = () => {
@@ -345,8 +386,15 @@ const showGameScreen = () => {
 };
 
 const gameStartBtn$$ = document.querySelectorAll(".game__opt");
+
+//MEMORY
 gameStartBtn$$[0].addEventListener("click", (e) => {
   memoryGame(gameBodyScreen$$, gameLidScreen$$, pokemonsDetails)
+  showGameScreen();
+});
+//WHACK A PKMON
+gameStartBtn$$[1].addEventListener("click", (e) => {
+  whackGame(gameBodyScreen$$, gameLidScreen$$, )
   showGameScreen();
 });
 
