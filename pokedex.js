@@ -17,7 +17,7 @@ import {bodyScreenPokemons$$,
   menuScreen$$,
   viewBtn$$,
   menuBtn$$,
-  searchBtn$$,
+ clearBtn$$,
   filtersBtn$$ ,
   menuBtnPokedex$$,
   menuBtnGames$$,
@@ -47,17 +47,19 @@ import {bodyScreenPokemons$$,
 import { memoryGame } from "./mini-games_memory.js"
 import { whackGame } from "./mini-games_whack.js"
 
-
-
+let limitOfPokemons = 151
 const pokemonsDetails = [];
 let evolutions = {
   prev: 'prev',
   next: 'next'
 }
 let typesFilters = []
-let pokemonsFiltered = []
 let captures = 0;
 let sights = 0;
+let filtersUsed = []
+
+// limitOfPokemons = prompt("Hasta que pokemon quieres ver?", 151)
+// if (!limitOfPokemons > 1 && limitOfPokemons < 1010) alert("otra vez, plis...")
 
 //! MENU-----------------------------------------------------------------
 export const showMenu = () => {
@@ -88,20 +90,42 @@ const searchPokemon = (input) => {
 };
 
 //! FILTERS-------------------------------------------------------------
-const filterPokemon = (e) => {
-  const filter = e.target.textContent
-  console.log(filter)
-  let searchResults = 0;
-  for (const pokemon of pokemonsDetails) {
-    const searchTarget = pokemon.types;
-
-    if (!searchTarget.includes(filter)) {
-      document.getElementById(pokemon.id).classList.add("display-none");
-    } else {
-      document.getElementById(pokemon.id).classList.remove("display-none");
-      searchResults++;
-    }
+const reloadDisplay = (pokemonsList) => {
+  for (const pokemon of pokemonsList) {
+    pokemon.display && printPokemonItem(pokemon)
   }
+}
+const removePokemonItems = () => {
+  bodyScreenPokemons$$.innerHTML = ''
+}
+
+const evaluatesFilters = (filters) => {
+  for (const pokemon of pokemonsDetails) {
+    pokemon.display = true
+    filters.forEach(filter => {
+      if (!pokemon.types.includes(filter)) {
+        pokemon.display = false
+      }
+    })
+  }
+
+  removePokemonItems()
+  reloadDisplay(pokemonsDetails) //print again pokeItems with the pokemons that have porpierty display:true
+  toggleClasses(filterNav$$, ["showDown"])  //hide filters nav
+}
+
+const filterPokemon = (e) => {                           
+  const filter = e.target.textContent
+
+  if (filtersUsed.includes(filter) ) { 
+    filtersUsed.splice(filtersUsed.indexOf(filter), 1)   
+  } else {
+    filtersUsed.push(filter)                              
+  }
+  evaluatesFilters(filtersUsed)
+  
+  let searchResults = 0;
+  pokemonsDetails.forEach(pokemon => {pokemon.display && searchResults++})
   searchResult$$.textContent = `Found: ${threeDigitNumber(searchResults)}`;
 };
 
@@ -312,7 +336,7 @@ const getAllPokemons = async (limitPokemons) => {
   
 }
 
-getAllPokemons(151)
+getAllPokemons(limitOfPokemons)
 
 
 
@@ -327,7 +351,7 @@ menuBtnGames$$.addEventListener("click", () => {
   toggleClasses(gamesList$$, ["hidden"]);
 });
 
-//? CHANGE VIEW GRID/LIST
+//? CHANGE VIEW GRID/LIST=================================
 viewBtn$$.addEventListener("click", (e) => {
   toggleClasses(bodyScreenPokemons$$, ["grid", "list"]);
   if (e.target.textContent === "grid") {
@@ -337,18 +361,37 @@ viewBtn$$.addEventListener("click", (e) => {
   }
 });
 
-//? SEARCH INPUT
+//? SEARCH INPUT==========================================
 searchInput$$.addEventListener("keyup", () => {
   searchPokemon(searchInput$$);
 });
 
-//? TYPES FILTERS NAV
+//? CLEAR ALL FILTERS BTN=====================================
+clearBtn$$.addEventListener("click", (e) => {
+  //clean everythings
+  e.preventDefault()
+  removePokemonItems()
+  searchInput$$.value = ''
+  filtersUsed = []
+  //remove active class from filter btns
+  const btns = filterNav$$.querySelectorAll('span')
+  btns.forEach(btn => {
+    hasClass(btn, "active") && btn.classList.remove("active")
+  })
+  //display all pokemons and print the pokeItems
+  pokemonsDetails.forEach(pokemon => {
+    pokemon.display = true
+    printPokemonItem(pokemon)
+  })
+})
+
+//? TYPES FILTERS NAV======================================
 filtersBtn$$.addEventListener("click", (e) => {
   e.preventDefault()
   toggleClasses(filterNav$$, ["showDown"])  
 })
 
-//? EVOLUTIONS BTNS
+//? EVOLUTIONS BTNS======================================
 prevEvolBtn$$.addEventListener("click", (e)=>{
   printDetails(e, evolutions.prev)
   checkEvolutions(evolutions.prev)

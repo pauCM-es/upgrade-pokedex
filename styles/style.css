@@ -224,7 +224,6 @@ body {
 .pokedex {
   width: 800px;
   height: 700px;
-  border: 1px solid red;
   margin-top: 100px;
   display: flex;
   flex-wrap: wrap;
@@ -500,6 +499,7 @@ body {
   border: 1px solid #91faff;
   border-radius: 3px;
   display: flex;
+  align-content: flex-start;
   flex-wrap: wrap;
   gap: 0.5rem 0.9rem;
   overflow-y: scroll;
@@ -513,6 +513,7 @@ body {
 .pokedex-body .body-screen .grid .pokemons__item {
   width: 60px;
   height: 60px;
+  background-color: rgba(0, 30, 253, 0.596);
   border: 1px solid #91faff;
   border-radius: 4px;
   filter: grayscale(80%);

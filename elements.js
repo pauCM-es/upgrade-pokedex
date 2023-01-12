@@ -10,8 +10,8 @@ export const menuScreen$$ = document.querySelector("#menu__ui");
 //buttons
 export const viewBtn$$ = document.querySelector("#view-btn");
 export const menuBtn$$ = document.querySelector("#menu-btn");
-export const searchBtn$$ = document.querySelector("#search-btn");
 export const filtersBtn$$ = document.querySelector("#filter-btn");
+export const clearBtn$$ = document.querySelector("#clear-btn");
 export const menuBtnPokedex$$ = document.querySelector("#menu-btn__pokedex");
 export const menuBtnGames$$ = document.querySelector("#menu-btn__games");
 export const menuBtnScanner$$ = document.querySelector("#menu-btn__scanner");
