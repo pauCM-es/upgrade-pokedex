@@ -56,6 +56,8 @@ let evolutions = {
 }
 let typesFilters = []
 let pokemonsFiltered = []
+let captures = 0;
+let sights = 0;
 
 //! MENU-----------------------------------------------------------------
 export const showMenu = () => {
@@ -103,8 +105,8 @@ const filterPokemon = (e) => {
   searchResult$$.textContent = `Found: ${threeDigitNumber(searchResults)}`;
 };
 
-const getBtnsFilters = (list) => {
-  for(const pokemon of list) {
+const getBtnsFilters = (listPokemons) => {
+  for(const pokemon of listPokemons) {
     pokemon.types.forEach(type => {
     
       if (typesFilters[type] === undefined) {
@@ -185,7 +187,35 @@ const printDetails = (e, pokemon) => {
 
 };
 
+//! PRINT POKE ITEM -------------------------------------------------
+    //pokemonInArray is the one with all the data after merging the second fetch
+  const printPokemonItem = (pokemon) => {
+    const pokeItem$$ = document.createElement("div");
+    pokeItem$$.className = `pokemons__item`;
+    pokeItem$$.id = pokemon.id;
+    pokemon.types.forEach(type => {
+      pokeItem$$.classList.add(type)
+    })
+    pokeItem$$.innerHTML = 
+    `
+    <img src="${pokemon.sprites.front_default}"/>
+    <span>${pokemon.id} - </span>
+    <span>${pokemon.name}</span>
+    `
+    bodyScreenPokemons$$.appendChild(pokeItem$$);
+    
+    pokemon.caught === true && pokeItem$$.classList.add("caught");
+    pokemon.seen === true && pokeItem$$.classList.add("seen");
+    pokemon.legendary === true && pokeItem$$.classList.add("legendary");
 
+    
+    //?click on pokeItem$$
+    pokeItem$$.addEventListener("click", (e) => {
+      //parameter => pokemon on the pokemonDetails array, not the fetch result
+      printDetails(e, pokemon);
+      checkEvolutions(pokemon)
+    });
+  }
 
 
 
@@ -198,13 +228,12 @@ const printDetails = (e, pokemon) => {
 //! FETCH FOR POKEMONS DATA AND PRINT:----------------------
 
 
-//*more data about the species to use after getting all pokemons-----
+//* ADDITIONAL DATA about the species to use after getting all pokemons-----
 const getSpecieData = async (pokemon) => {
   const response = await fetch(pokemon.species.url);
   const resultData = await response.json();
   const {
     color,
-    egg_groups,
     evolution_chain,
     flavor_text_entries,
     habitat,
@@ -212,10 +241,6 @@ const getSpecieData = async (pokemon) => {
   } = resultData;
 
   //clean data
-  const eggs = egg_groups.map((egg) => {
-    return egg.name;
-  });
-
   const text_entries = [];
   flavor_text_entries.forEach((entry) => {
     if (entry.language.name === "es" && text_entries.length < 3) {
@@ -223,11 +248,10 @@ const getSpecieData = async (pokemon) => {
     }
   });
 
-  //add data to the pokemon
+  //add data to the pokemonDetails
   const data = {
     color: color.name,
     habitat: habitat.name,
-    egg_groups: eggs,
     legendary: is_legendary,
     evolution_forms: evolution_chain.url,
     text_entries: text_entries,
@@ -239,24 +263,25 @@ const getSpecieData = async (pokemon) => {
 
 
 
-//* get all pokemons details and saving in an Array after fetching the list. 
+//* get ALL POKEMONS DETAILS and saving in an Array after fetching the list. 
 //* Then print information for that pokemon.--------------------------------
-const getAllPokemons = async (pokemonsList) => {
-  let captures = 0;
-  let sights = 0;
-
-  for (const pokemon of pokemonsList) {
-    const response = await fetch(pokemon.url);
+const getAllPokemons = async (limitPokemons) => {
+  
+  for (let i = 0; i < limitPokemons; i++) {
+    const pokemonId = i+1;
+    const url = `https://pokeapi.co/api/v2/pokemon/${pokemonId}`
+  
+    const response = await fetch(url);
     const result = await response.json();
+    const specieData = await getSpecieData(result);
 
     //clean data
     const { id, height, weight, name, species, sprites, types } = result;
     const typesList = types.map((type) => type.type.name);
-    const specieData = await getSpecieData(result);
     const newId = threeDigitNumber(id);
 
     pokemonsDetails.push({
-      name: pokemon.name,
+      name: result.name,
       id: newId,
       height,
       weight,
@@ -269,66 +294,25 @@ const getAllPokemons = async (pokemonsList) => {
       seen: true,
       display: true
     });
-    
-    //? PRINT POKE ITEM -------------------------------------------------
-    //pokemonInArray is the one with all the data after merging the second fetch
-    const pokemonInArray = pokemonsDetails.filter(
-      (pkm) => pkm.name === pokemon.name
-    )[0];
-
-    const pokeItem$$ = document.createElement("div");
-    pokeItem$$.className = `pokemons__item`;
-    pokeItem$$.id = pokemonInArray.id;
-    pokemonInArray.types.forEach(type => {
-      pokeItem$$.classList.add(type)
-    })
-    pokeItem$$.innerHTML = 
-    `
-    <img src="${pokemonInArray.sprites.front_default}"/>
-    <span>${pokemonInArray.id} - </span>
-    <span>${pokemonInArray.name}</span>
-    `
-    bodyScreenPokemons$$.appendChild(pokeItem$$);
-    
-    pokemonInArray.caught === true && pokeItem$$.classList.add("caught");
-    pokemonInArray.seen === true && pokeItem$$.classList.add("seen");
-    pokemonInArray.legendary === true && pokeItem$$.classList.add("legendary");
-
-    //? show caught/seen indicator
-    pokemonInArray.caught === true && captures++;
-    pokemonInArray.seen === true && sights++;
-    
-    //?click on pokeItem$$
-    pokeItem$$.addEventListener("click", (e) => {
-      //parameter => pokemon on the pokemonDetails array, not the fetch result
-      printDetails(e, pokemonInArray);
-      checkEvolutions(pokemonInArray)
-    });
+      const pokemonInArray = pokemonsDetails.filter(
+      (pkm) => pkm.name === result.name
+      )[0];
+      
+      printPokemonItem(pokemonInArray)
+      
+      //? show caught/seen indicator
+      pokemonInArray.caught  && captures++;
+      pokemonInArray.seen && sights++;
   }
+
   getBtnsFilters(pokemonsDetails)
   pokemonCaughts$$.textContent = captures;
   pokemonSeen$$.textContent = sights;
-};
-
-
-
-//* fetching the pokemons urls from the api ----------------------
-const getPokemonList =  async () => {
-  const response = await fetch("https://pokeapi.co/api/v2/pokemon?offset=0&limit=151")
-  const result = await response.json()
-  const pokemonList = result.results.map((pokemon) => {
-          return pokemon;
-  })
-
-  getAllPokemons(pokemonList)
+  console.log(pokemonsDetails)
+  
 }
 
-getPokemonList()
-
-
-
-
-
+getAllPokemons(151)
 
 
 
