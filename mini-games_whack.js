@@ -4,82 +4,118 @@ import {
   removeElements,
   stopClicks,
   checkTimer,
-  startCountDown
+  startCountDown,
+  getElement,
+  randomNumber,
+  toggleClasses,
 } from "./helpers.js";
 
 export const whackGame = (elementToAppend, elementTwoToAppend) => {
-  const countDownStart = 40
-  let secondsTimer = countDownStart
+  const countDownStart = 20
   let score = 0
-  let isGameOver = false
-  let timerIsActive = false
-  let interval
+  let timeUp = false
+  let lastHole = 0
+  let interval = 800
+  let timer
+  const molesImg = [
+    {name: "diglett", possibility: 50},
+    {name: "dugtrio", possibility: 80},
+    {name: "guacamole", possibility: 100}
+  ]
 
-  const checkGameOver = () => {
-    score === numCards * 10 ? isGameOver = true : isGameOver = false
-    
-    return isGameOver
+  const startGame = () => {
+    console.log("START GAME")
+    scoreNumber$$.textContent = 0;
+    timeUp = false;
+    score = 0;
+    game(interval);
+    setTimeout(() => {
+      timeUp = true
+    }, countDownStart * 1000) 
   }
 
-  const restartGame = () => {
-    console.log("RESTARTING GAME...")
-    removeElements(gameSpace$$, "div")
-    secondsTimer = countDownStart
-    timerSeconds$$.textContent = countDownStart
-    score = 0
-    scoreNumber$$.textContent = 0
-  }
-
-  const printWhackBlocks = (pokemon) => {
-    for (let i = 0; i < 6; i++) {
-
-      const block$$ = document.createElement("div");
-      block$$.className = "block";
-      block$$.innerHTML = `
-      <div class="block-whack id-${i}">
-        <div class="whack-pokemon">
-          <img id="pokemon${i}" src="${pokemon}" class="whack-pokemon__img">
-        </div>
-        <div class="whack-dirt">
-          <img src="./assets/dirt.png" class="whack-dirt__img">
-        </div>
-      </div>
-      `;
-
-      gameSpace$$.appendChild(block$$)
+  const randomHole = (min, max) => {
+    let newRandomHole = randomNumber(min, max)
+    while ( newRandomHole === lastHole) {
+      newRandomHole = randomNumber(min, max)
     }
-
+    lastHole = newRandomHole
+    return newRandomHole
   }
 
-  // function startGame() {
-  //   scoreBoard.textContent = 0;
-  //   timeUp = false;
-  //   score = 0;
-  //   peep();
-  //   setTimeout(() => timeUp = true, 15000) 
-  //muestra topos aleatoriamente durante 15 segundos
-  // }
+  const peep = (miliseconds, element) => {
+    const possibility = randomNumber(1,100)
+    const randomImg = molesImg.find(mole => mole.possibility > possibility)
+    const elementChild = element.firstChild.nextSibling
+    element.classList.add("up")
+    toggleClasses(elementChild, ["diglett", randomImg.name])
+    setTimeout(() => {
+      element.classList.remove("up")
+      toggleClasses(elementChild, ["diglett", randomImg.name])
+    }, miliseconds);
+  }
+
+  const whack = (e) => {
+    console.log("WHACK")
+    // console.log(e.composedPath())
+    console.log(e.target)
+    // e.target.classList.remove("up")
+    // if (condition) {
+      
+    // }
+    // scoreNumber$$.textContent = score
+    // console.log(score)
+  }
+
+  const game = (time) => {
 
 
-
-
-
-
+    setInterval(() => {
+      if (!timeUp) {
+        const hole$$ = document.getElementById(randomHole(1,6))
+        const moleTime = randomNumber(1000, 1000)
+        peep(moleTime, hole$$)
+      }
+    }, time);
+  }
 
   //! PRINTING ELEMENTS ON SCREENS-----------------------------------------
 
   //*print screen 1 -> GAME -----------------------------------------------
   const miniGame$$ = document.createElement("div");
   miniGame$$.className = "miniGame-whack";
-  elementToAppend.appendChild(miniGame$$);
 
-  const h2$$ = document.createElement("h2");
-  h2$$.textContent = "WHACK A DIGLETT";
-  miniGame$$.appendChild(h2$$);
   const gameSpace$$ = document.createElement("div");
   gameSpace$$.className = "game-space"
-  miniGame$$.appendChild(gameSpace$$)
+  gameSpace$$.innerHTML = 
+  `
+  <div id="1" class="hole hole1">
+    <div class="mole diglett"></div>
+  </div>
+  
+  <div id="2"  class="hole hole2">
+    <div class="mole diglett"></div>
+  </div>
+  
+  <div id="3"  class="hole hole3">
+    <div class="mole diglett"></div>
+  </div>
+  
+  <div id="4"  class="hole hole4">
+    <div class="mole diglett"></div>
+  </div>
+  
+  <div id="5"  class="hole hole5">
+    <div class="mole diglett"></div>
+  </div>
+  
+  <div id="6"  class="hole hole6">
+    <div class="mole diglett"></div>
+  </div>`
 
+  miniGame$$.appendChild(gameSpace$$)
+  elementToAppend.appendChild(miniGame$$);
+        
   //* Print screen 2 -> DETAILS -----------------------------------------------
   const gameDetails$$ = document.createElement("div");
   gameDetails$$.className = "miniGame-details"
@@ -88,8 +124,7 @@ export const whackGame = (elementToAppend, elementTwoToAppend) => {
     <div class="timer">
       <h2>TIMER</h2>
       <p class="timer-seconds">${countDownStart}</p>
-      <button class="start__btn">RESTART</button>
-      <button class="restart__btn">START</button>
+      <button class="start__btn">START</button>
     </div>
     <div class="score">
       <h2>SCORE</h2>
@@ -98,17 +133,24 @@ export const whackGame = (elementToAppend, elementTwoToAppend) => {
 
   elementTwoToAppend.appendChild(gameDetails$$)
   const startBtn$$ = document.querySelector(".start__btn")
-  const restartBtn$$ = document.querySelector(".restart__btn")
   startBtn$$.addEventListener("click", () => {
-    startCountDown()
-  })
-  restartBtn$$.addEventListener("click", () => {
-    clearInterval(interval)    
-    restartGame()
+    startGame()
   })
   const scoreNumber$$ = document.querySelector(".score-number")
   const timerSeconds$$ = document.querySelector(".timer-seconds")
 
-  printWhackBlocks("./assets/diglett.png")
+  const moles$$ = document.querySelectorAll(".mole")
+  const holes$$ = document.querySelectorAll(".hole")
+  // for (const mole of moles$$) {
+  //   mole.addEventListener("click", (event) => {
+  //     console.log("clickkkkkkkkkk", event.composedPath())
+  //     // whack(e)
+  //   })
+  // }
+  for (const hole of holes$$) {
+    hole.addEventListener("click", (e) => {
+      whack(e)
+    })
+  }
 }
  

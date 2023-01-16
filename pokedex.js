@@ -7,6 +7,7 @@ import {
   toggleClasses,
   getRandomItems,
   getElement,
+  randomBoolean,
 } from "./helpers.js";
 
 import {bodyScreenPokemons$$,
@@ -42,6 +43,11 @@ import {bodyScreenPokemons$$,
   prevEvolName$$,
   nextEvolBtn$$,
   nextEvolName$$,
+  sensor$$,
+  pokedex$$,
+  loadingBar$$,
+  switchOnScreen$$,
+  detailsTitle$$,
 } from "./elements.js"
 
 import { memoryGame } from "./mini-games_memory.js"
@@ -60,50 +66,103 @@ let sights = 0;
 let filtersUsed = []
 let randomIds = []
 let clicks = 0
+const amountWilds = 1
 
 // limitOfPokemons = prompt("Hasta que pokemon quieres ver?", 151)
 // if (!limitOfPokemons > 1 && limitOfPokemons < 1010) alert("otra vez, plis...")
 
+//TODO- IF ALL SEEN/CAPTURED => SCREEN OF -CATCH THEM ALL-
+//TODO- WHACK A MOLE GAME
+//TODO- FUNCTION TO SWITCH IF POKEMON IS CAUTH OR NOT ✅
+//TODO- POKEDEX MENU BTN ✅
+//TODO- EXIT BTN ON THE MINIGAMES
+//TODO- FIX TIMER MEMORY GAME AFTER RESTART
 
-// to register at the pokedex
-const caught = (pokemonWild) => {
+const synth = window.speechSynthesis;
+const speak = (message) => {
+  const utterThis = new SpeechSynthesisUtterance(message);
+  utterThis.pitch = 0.1;
+  utterThis.rate = 0.9;
+  synth.speak(utterThis);
+}
+
+//!SWITCH ON POKEDEX ----------------------------------------------------
+const switchOn = () => {
+  loadingBar$$.classList.add("auto-progress")
+  setTimeout(() => {
+    switchOnScreen$$.remove()
+    detailsScreen$$.classList.toggle("display-none")
+  }, 1500);
+}
+
+switchOn()
+//! WILD POKEMON------------------------------------------------------
+const caughtThemAll = (sights) => {
+  if (sights === limitOfPokemons) {
+    pokemonSeen$$.parentElement.classList.add("shiny")
+  }
+}
+
+const caught = (e, pokemonWild) => {
   const pokeItem$$ = document.getElementById(pokemonWild.id)
   pokemonWild.seen = true
+  pokemonWild.caught = true
   toggleClasses(pokeItem$$ ,["seen", "not-seen"])
-  sights = 0
-  pokemonsDetails.forEach(pokemon => {
-    pokemon.seen && sights++
-  })
+  toggleClasses(pokeItem$$ ,["caught"])
+
+  //reload de indicators again
+  sights++
+  captures++
   pokemonSeen$$.textContent = sights
+  pokemonCaughts$$.textContent = captures
+
+  caughtThemAll(sights, captures)
+
+  // get everything as it was (state initial)
+  e.target.remove()
+  sensor$$.classList.remove("sensor__active-two")
+  pokedex$$.classList.remove("buzz")
 }
 
 // A wild, unseen, pokemon appears
 const wildPokemon = (pokemon ) => {
   clicks = 0
-  const imgUrl = pokemon.sprites.versions["generation-v"]["black-white"].animated
-  const images = ['front_default', 'front_shiny', 'back_default', 'back_shiny']
+  const images = {
+    img1: pokemon.sprites.versions["generation-v"]["black-white"].animated.front_default ,
+    img2: pokemon.sprites.versions["generation-v"]["black-white"].animated.back_default,
+    img3: pokemon.sprites.versions["generation-v"]["black-white"].animated.front_shiny,
+    img4: pokemon.sprites.versions["generation-v"]["black-white"].animated.back_shiny
+  }
+  const randomImg = `img${randomNumber(1,4)}`
 
   const wildPokemon$$ = document.createElement('div')
   wildPokemon$$.className = 'wild-pokemon'
   wildPokemon$$.innerHTML = 
       `<div class="wild">
-        <img src="${pokemon.sprites.versions["generation-v"]["black-white"].animated.front_default}" alt="imagen de pokemon salvage">
+        <img src="${images[randomImg]}" alt="imagen de pokemon salvage">
       </div>`
   const body$$ = document.querySelector('body')
   body$$.appendChild(wildPokemon$$)
 
-  wildPokemon$$.addEventListener("click", () => {
-    caught(pokemon)
+  wildPokemon$$.addEventListener("click", (e) => {
+    caught(e, pokemon)
   })
-
+  //wild pokemon desapears
   setTimeout(() => {
     wildPokemon$$.remove()
   }, 10000);
 }
 
+const randomNotSeen = (amount) => {
+  for (let i = 0; i < amount; i++) {
+    randomIds.push(threeDigitNumber(randomNumber(1, limitOfPokemons)))
+  }
+  console.log(randomIds)
+}
+randomNotSeen(amountWilds)
 
 //! MENU-----------------------------------------------------------------
-export const showMenu = () => {
+const showMenu = () => {
   if (hasClass(gameLidScreen$$, "display-none")) {
     toggleClasses(menuScreen$$, ["display-none"]);
     toggleClasses(detailsScreen$$, ["display-none"]);
@@ -113,13 +172,6 @@ export const showMenu = () => {
   }
 };
 
-const randomNotSeen = (amount) => {
-  for (let i = 0; i < amount; i++) {
-    randomIds.push(threeDigitNumber(randomNumber(0, limitOfPokemons)))
-  }
-  console.log(randomIds)
-}
-randomNotSeen(2)
 
 //! SEARCH--------------------------------------------------------------
 const searchPokemon = (input) => {
@@ -243,6 +295,40 @@ const printDetails = (e, pokemon) => {
     detailsTypes$$.appendChild(span$$) 
   })
 
+  //? IS CAPTURE
+const toggleBtnCapture = (pokemon) => {
+  if (pokemon.caught) {
+    isCaptureBtn$$.textContent = "Captured"
+  } else {
+    isCaptureBtn$$.textContent = "Not captured"
+  }
+}
+
+  const pokemonCapture = (e, pokemon) => {
+    pokemon.caught = !pokemon.caught
+    console.log(pokemon)
+    toggleBtnCapture(pokemon)
+    // e.target.textContent = "Captured" ? e.target.textContent = "Not captured" : e.target.textContent = "Captured"
+    const pokeItem$$ = document.getElementById(pokemon.id)
+    toggleClasses(pokeItem$$ ,["caught"])
+    pokemon.caught ? captures++ : captures --
+    pokemonCaughts$$.textContent = captures
+  }
+
+  detailsTitle$$.innerHTML = "Information:"
+  const isCaptureBtn$$ = document.createElement("button")
+  isCaptureBtn$$.className = pokemon.id
+  toggleBtnCapture(pokemon)
+  console.log(isCaptureBtn$$)
+  detailsTitle$$.appendChild(isCaptureBtn$$)
+  isCaptureBtn$$.addEventListener("click", (e)=> {
+      console.log(e.target)
+      console.log(e.target.classList.value)
+      const pokemon = pokemonsDetails.find(pkm => pkm.id === e.target.classList.value)
+      pokemonCapture(e, pokemon)
+    }
+  )
+
   //? IMAGE
   detailsImg$$.src = pokemon.sprites.other["official-artwork"].front_default;
 
@@ -288,10 +374,26 @@ const printDetails = (e, pokemon) => {
       //parameter => pokemon on the pokemonDetails array, not the fetch result
       printDetails(e, pokemon);
       checkEvolutions(pokemon)
+      speak(pokemon.name)
     })} else {
       pokeItem$$.addEventListener('click', (e)=> {
         clicks++
-        clicks === 3 && wildPokemon(pokemon)
+        switch (clicks) {
+          case 1:
+            sensor$$.classList.add("sensor__active");
+            speak("parece que la pokedex ha detectado algo...")
+            break;
+          case 2:
+            toggleClasses(sensor$$, ["sensor__active","sensor__active-two"]);
+            toggleClasses(pokedex$$, ["buzz"]);
+            break;
+          case 3:
+            speak(`Que es eso! Parece un ${pokemon.name} salvaje`)
+            setTimeout(() => {
+              wildPokemon(pokemon);
+            }, 1300);
+            break;
+        }
       })
     }
   }
@@ -369,8 +471,8 @@ const getAllPokemons = async (limitPokemons) => {
       sprites,
       types: typesList,
       ...specieData,
-      caught: false,
-      seen: !randomIds.includes(newId), // 
+      caught: randomIds.includes(newId) ? false : randomBoolean(),
+      seen: !randomIds.includes(newId), 
       display: true
     });
       const pokemonInArray = pokemonsDetails.filter(
@@ -386,11 +488,7 @@ const getAllPokemons = async (limitPokemons) => {
 
   getBtnsFilters(pokemonsDetails)
   pokemonCaughts$$.textContent = captures;
-  pokemonSeen$$.textContent = sights;
-
-
-  console.log(pokemonsDetails)
-  
+  pokemonSeen$$.textContent = sights;  
 }
 
 getAllPokemons(limitOfPokemons)
@@ -404,6 +502,7 @@ getAllPokemons(limitOfPokemons)
 
 //? MENU BTN
 menuBtn$$.addEventListener("click", showMenu);
+menuBtnPokedex$$.addEventListener("click", showMenu);
 menuBtnGames$$.addEventListener("click", () => {
   toggleClasses(gamesList$$, ["hidden"]);
 });

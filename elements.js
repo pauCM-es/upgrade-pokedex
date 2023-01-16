@@ -6,6 +6,7 @@ export const detailsScreen$$ = document.querySelector("#details__ui");
 export const gameLidScreen$$ = document.querySelector("#game-lid__ui");
 export const gameBodyScreen$$ = document.querySelector("#game-body__ui");
 export const menuScreen$$ = document.querySelector("#menu__ui");
+export const switchOnScreen$$ = document.querySelector("#switch-on__ui");
 
 //buttons
 export const viewBtn$$ = document.querySelector("#view-btn");
@@ -20,8 +21,10 @@ export const nextEvolBtn$$ = document.querySelector("#evol-next__btn");
 
 export const searchInput$$ = document.querySelector("#search-input");
 export const filterNav$$ = document.querySelector(".filter-nav");
+
 export const detailsBody$$ = document.querySelector(".lid-screen__body");
 export const detailsName$$ = document.querySelector("#details__name");
+export const detailsTitle$$ = document.querySelector("#details__title");
 export const detailsNumber$$ = document.querySelector("#details__number");
 export const detailsImg$$ = document.querySelector("#details__img");
 export const detailsHabitat$$ = document.querySelector("#details__habitat");
@@ -30,9 +33,14 @@ export const detailsHeight$$ = document.querySelector("#details__height");
 export const detailsColor$$ = document.querySelector("#details__color");
 export const detailsFlavors$$ = document.querySelector("#details__flavors");
 export const detailsTypes$$ = document.querySelector("#details__types");
+
 export const pokemonCaughts$$ = document.querySelector("#pokemons-caught");
 export const pokemonSeen$$ = document.querySelector("#pokemons-seen");
 export const searchResult$$ = document.querySelector("#search-results");
 export const gamesList$$ = document.querySelector("#game__options");
 export const prevEvolName$$ = document.querySelector("#evol-prev__name");
 export const nextEvolName$$ = document.querySelector("#evol-next__name");
+export const sensor$$ = document.querySelector(".body-sensor");
+export const pokedex$$ = document.querySelector(".pokedex");
+export const loadingBar$$ = document.querySelector(".loading-bar__bar");
+

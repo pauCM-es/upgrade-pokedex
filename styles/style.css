@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Bungee+Shade&family=Press+Start+2P&display=swap");
 @-webkit-keyframes blink {
   0% {
     box-shadow: 0 0 50px rgb(0, 221, 255), 0 0 25px white;
@@ -20,6 +21,28 @@
     box-shadow: 0 0 50px rgb(0, 221, 255), 0 0 25px white;
   }
 }
+@-webkit-keyframes blink2 {
+  0% {
+    box-shadow: 0 0 50px rgb(255, 217, 121), 0 0 25px white;
+  }
+  20% {
+    box-shadow: 0 0 10px rgb(255, 217, 121), 0 0 0px white;
+  }
+  100% {
+    box-shadow: 0 0 50px rgb(255, 217, 121), 0 0 25px white;
+  }
+}
+@keyframes blink2 {
+  0% {
+    box-shadow: 0 0 50px rgb(255, 217, 121), 0 0 25px white;
+  }
+  20% {
+    box-shadow: 0 0 10px rgb(255, 217, 121), 0 0 0px white;
+  }
+  100% {
+    box-shadow: 0 0 50px rgb(255, 217, 121), 0 0 25px white;
+  }
+}
 @-webkit-keyframes auto-progress {
   0% {
     width: 0%;
@@ -34,6 +57,26 @@
   }
   100% {
     width: 100%;
+  }
+}
+@-webkit-keyframes caught {
+  0% {
+    scale: 190%;
+    box-shadow: inset 0 0 50px rgb(255, 217, 121);
+  }
+  100% {
+    scale: 100%;
+    box-shadow: none;
+  }
+}
+@keyframes caught {
+  0% {
+    scale: 190%;
+    box-shadow: inset 0 0 50px rgb(255, 217, 121);
+  }
+  100% {
+    scale: 100%;
+    box-shadow: none;
   }
 }
 #game-lid__ui .miniGame-details {
@@ -146,42 +189,58 @@
   justify-content: center;
   gap: 0 1rem;
 }
-.miniGame-whack .block {
-  width: 25%;
+.miniGame-whack .hole {
+  display: flex;
+  overflow: hidden;
+  position: relative;
+  width: 30%;
   height: 35%;
-  display: flex;
   justify-content: center;
-  border: 1px solid white;
 }
-.miniGame-whack .block-whack {
-  height: 100%;
-}
-.miniGame-whack .whack-dirt {
+.miniGame-whack .hole:after {
+  display: block;
+  background: url(../assets/dirt.png) bottom center no-repeat;
+  background-size: contain;
+  content: "";
   width: 100%;
-  position: relative;
-  z-index: 5;
-  align-self: flex-end;
+  height: 90px;
+  position: absolute;
+  z-index: 2;
+  bottom: -30px;
 }
-.miniGame-whack .whack-dirt img {
-  width: 100%;
-}
-.miniGame-whack .whack-pokemon {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  height: 0%;
-  transition: height 100ms;
-  z-index: 3;
-  position: relative;
-}
-.miniGame-whack .whack-pokemon img {
+.miniGame-whack .mole {
   width: 60%;
-  filter: grayscale(90%) invert(63%) sepia(49%) saturate(297%) hue-rotate(170deg);
-  background-color: rgba(128, 171, 216, 0);
-  mix-blend-mode: color-burn;
+  height: 100%;
+  border-radius: 50%;
 }
-.miniGame-whack .up {
-  height: 90%;
+.miniGame-whack .mole.diglett {
+  background: url("../assets/diglett.png") bottom center no-repeat;
+  background-size: 80%;
+  position: absolute;
+  top: 100%;
+  width: 60%;
+  height: 100%;
+  transition: all 0.4s;
+}
+.miniGame-whack .mole.dugtrio {
+  background: url("../assets/dugtrio.png") bottom center no-repeat;
+  background-size: 90%;
+  position: absolute;
+  top: 100%;
+  width: 60%;
+  height: 100%;
+  transition: all 0.4s;
+}
+.miniGame-whack .mole.guacamole {
+  background: url("../assets/guacamole.jpeg") bottom center no-repeat;
+  background-size: 100%;
+  position: absolute;
+  top: 100%;
+  transition: all 0.4s;
+  overflow: hidden;
+}
+.miniGame-whack .hole.up .mole {
+  top: 0;
 }
 
 .pokedex-body .body-screen__nav div, .pokedex-body .body-screen, .pokedex-body .body-interface, .pokedex-lid .lid-screen, .pokedex-lid, body, #game-body__ui .miniGame-memory .card__face--back {
@@ -249,6 +308,35 @@ body {
   position: relative;
   bottom: -80px;
   left: 75px;
+}
+.pokedex-lid #switch-on__ui {
+  width: 90%;
+  display: flex;
+}
+.pokedex-lid #switch-on__ui .pokedex__title {
+  border: none;
+  width: 90%;
+  margin-top: 5rem;
+}
+.pokedex-lid #switch-on__ui .pokedex__title h1 {
+  font-family: "Press Start 2P", cursive;
+  font-size: 5rem;
+  text-align: center;
+}
+.pokedex-lid #switch-on__ui .loading-bar {
+  width: 80%;
+  height: 2rem;
+  margin-top: 3rem;
+}
+.pokedex-lid #switch-on__ui .loading-bar__bar {
+  background-color: #91faff;
+  border: none;
+  width: 20%;
+  height: 100%;
+}
+.pokedex-lid #switch-on__ui .auto-progress {
+  -webkit-animation: auto-progress 1.5s;
+          animation: auto-progress 1.5s;
 }
 .pokedex-lid #menu__ui .menu__item {
   width: 50%;
@@ -537,10 +625,8 @@ body {
 .pokedex-body .body-screen .grid .pokemons__item {
   width: 60px;
   height: 60px;
-  background-color: rgba(0, 30, 253, 0.596);
   border: 1px solid #91faff;
   border-radius: 4px;
-  filter: grayscale(80%);
 }
 .pokedex-body .body-screen .grid .pokemons__item:hover {
   background-color: rgba(150, 250, 255, 0.435);
@@ -558,6 +644,18 @@ body {
 }
 .pokedex-body .body-screen .grid .not-seen img {
   filter: brightness(0%);
+}
+.pokedex-body .body-screen .grid .seen {
+  filter: grayscale(80%);
+}
+.pokedex-body .body-screen .grid .caught {
+  -webkit-animation: caught 0.7s ease-in;
+          animation: caught 0.7s ease-in;
+  background-image: url(../assets/pokeball.svg);
+  background-blend-mode: overlay;
+  background-color: rgba(197, 197, 197, 0.7803921569);
+  border: none;
+  border-radius: 50px;
 }
 .pokedex-body .body-screen .list {
   width: 95%;
@@ -614,6 +712,9 @@ body {
 .pokedex-body .body-screen__nav .screen__icons div {
   margin: 0 1rem;
 }
+.pokedex-body .body-screen__nav .screen__icons div svg {
+  color: #91faff;
+}
 .pokedex-body .body-screen__nav .screen__icons div p {
   margin: 0 0.5rem;
   font-size: 1.2rem;
@@ -628,9 +729,29 @@ body {
   -webkit-animation: blink 1.33s ease-out infinite;
           animation: blink 1.33s ease-out infinite;
 }
+.pokedex .sensor__active-two {
+  -webkit-animation: blink2 0.5s ease-out infinite;
+          animation: blink2 0.5s ease-out infinite;
+}
 .pokedex .display-none {
   display: none;
 }
 .pokedex .hidden {
   content-visibility: hidden;
+}
+.pokedex .shiny {
+  border-radius: 25px;
+  -webkit-animation: blink 3.33s ease-out infinite;
+          animation: blink 3.33s ease-out infinite;
+  background-color: rgba(145, 250, 255, 0.7725490196);
+  color: rgb(28, 37, 70);
+  box-shadow: inset 0 0 9px 5px rgba(145, 250, 255, 0.9294117647), 0 0 7px 6px #91faff;
+}
+.pokedex .shiny svg {
+  color: rgb(6, 97, 109) !important;
+}
+
+.buzz {
+  -webkit-animation: buzz 0.2s infinite;
+          animation: buzz 0.2s infinite;
 }/*# sourceMappingURL=style.css.map */

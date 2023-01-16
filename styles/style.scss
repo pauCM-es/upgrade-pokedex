@@ -1,14 +1,12 @@
 //variables:
 @import 'animations';
-
+@import url('https://fonts.googleapis.com/css2?family=Bungee+Shade&family=Press+Start+2P&display=swap');
 $poke-red: #c85152;
 $screen: rgb(28, 37, 70);
 $screen-accent: #91faff;
 
 @import './mini-games_memory';
 @import './mini-games_whack';
-@import './easter-egg';
-
 %flex-center {
   display: flex;
   align-items: center;
@@ -61,9 +59,9 @@ body {
   }
 }
 
+
 .pokedex {
   width: 800px;
-  // height: 700px;
   margin-top: 100px;
   display: flex;
   flex-wrap: wrap;
@@ -81,6 +79,37 @@ body {
     left: 75px;
     @extend %flex-center;
 
+    //SWITCH-ON SCREEN
+    #switch-on__ui {
+      width: 90%;
+      display: flex;
+      
+      .pokedex__title {
+        border: none;
+        width: 90%;
+        margin-top: 5rem;
+        h1 {
+          // font-family: 'Bungee Shade', cursive;
+          font-family: 'Press Start 2P', cursive;
+          font-size: 5rem;
+          text-align: center;
+        }
+      }
+      .loading-bar {
+        width: 80%;
+        height: 2rem;
+        margin-top: 3rem;
+        &__bar {
+          background-color: #91faff;
+          border: none;
+          width: 20%;
+          height: 100%;
+        }
+      }
+      .auto-progress {
+      animation: auto-progress 1.5s ;
+      }
+    }
     //MENU SCREEN
     #menu__ui {
       
@@ -186,6 +215,7 @@ body {
           filter: brightness(5);
           align-self: center;
         }
+
       }
 
       &__body {
@@ -268,6 +298,10 @@ body {
 
       
     }
+
+    // .caught-all {
+
+    // }
   }
 
   //BODY
@@ -294,7 +328,8 @@ body {
         box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.39), 0 0 10px rgba(0, 0, 0, 0.708) ;
         margin: 40px 0 0 10px;
       }
-
+      
+      
       &-interface {
         grid-column: 2 / 3;
         border-left: 10px solid rgba(0, 0, 0, 0.36);
@@ -304,7 +339,7 @@ body {
         @extend %flex-center;
         align-items: flex-end;
       }
-
+      
       &-screen {
         background-color: rgb(47, 47, 47);
         clip-path: polygon(5% 0, 95% 0, 100% 7%, 100% 93%, 95% 100%, 5% 100%, 0% 93%, 0% 7%);
@@ -312,7 +347,7 @@ body {
         height: 350px;
         margin-bottom: 50px;
         @extend %flex-center;
-
+        
         &__ui {
           width: 88%;
           height: calc(100% - 7%);
@@ -325,7 +360,7 @@ body {
           justify-content: flex-start;
 
         }
-
+        
         &__search {
           width: 95%;
           height: 2.5rem;
@@ -335,8 +370,8 @@ body {
             color: rgba(255, 255, 255, 0.704);
             font-size: 1.1rem;
           }
-
-           input {
+          
+          input {
             background-color: rgba(255, 255, 255, 0);
             width: 60%;
             height: 2rem;
@@ -345,13 +380,13 @@ body {
             border-radius: 3px;
             color: $screen-accent;
             padding-left: 2rem;
-
+            
             &:focus {
               box-shadow: 0 0 10px rgba(150, 250, 255);
               outline: none;
             }
           }
-
+          
           .filter-nav {
             display: flex;
             flex-wrap: wrap;
@@ -366,7 +401,7 @@ body {
             transform: scaleY(0);
             transition: transform 150ms ease-in-out;
             transform-origin: top;
-
+            
             span {
               padding: 0.5rem;
               border-radius: 3px;
@@ -375,7 +410,7 @@ body {
                 color: $screen;
                 cursor: pointer;
               }
-
+              
             }
             .active {
               background-color: #91faffc1;
@@ -388,12 +423,12 @@ body {
           }
 
         }
-
+        
         .screen__btn {
           @extend %screen-btn;
-
+          
         }
-
+        
         // POKEMONS__ITEMS
         .grid {
           width: 95%;
@@ -409,25 +444,23 @@ body {
           &::-webkit-scrollbar {
             display: none;
           }
-
+          
           span {display:none}
           
           .pokemons__item {
             width: 60px;
             height: 60px;
-            background-color: rgba(0, 30, 253, 0.596);
             border: 1px solid $screen-accent;
             border-radius: 4px;
-            filter: grayscale(80%);
-
+            
             &:hover {
               background-color: rgba(150, 250, 255, 0.435);
               color: $screen;
               filter: grayscale(0%);
               scale: 110%;
-
+              
               img{
-              scale: 120%;
+                scale: 120%;
               }
             }
             
@@ -435,14 +468,27 @@ body {
               width: inherit;
               object-fit: contain;
             }
-
+            
             
           }
-          .not-seen img {
-            filter: brightness(0%);
+          .not-seen {
+            img {
+              filter: brightness(0%);
+          }}
+          .seen {
+            filter: grayscale(80%);
+          }
+          
+          .caught {
+            animation: caught 0.7s ease-in;
+            background-image: url(../assets/pokeball.svg);
+            background-blend-mode: overlay;
+            background-color: #c5c5c5c7;
+            border: none;
+            border-radius: 50px;
           }
         }
-
+        
         .list {
           width: 95%;
           height: 65%;
@@ -468,39 +514,44 @@ body {
           }
 
           img {display: none}
-
+          
           span {
             font-size: 2rem;
             user-select: none;
           }
         }
         
-
+        
         &__nav {
           width: 95%;
           margin-top: 0.5rem;
           display: flex;
           align-items: center;
           justify-content: space-between;
-
+          
           div {
             height: 25px;
             @extend %flex-center;
-
+            
             img{
               object-fit: contain;
               height: 100%;
               
             }
           }
-
+          
           .screen {
             &__icons {
               justify-self: flex-start;
-
+              
               div {
                 margin: 0 1rem;
 
+                svg {
+                  color:#91faff;
+
+              }
+                
                 p {
                   margin: 0 0.5rem;
                   font-size: 1.2rem;
@@ -517,14 +568,29 @@ body {
     }
   }
 
-
+  
+  
+  
   .legendary {
     background: radial-gradient(rgb(255 255 0) 2%,#00000000 80%);
   }
+  
   .sensor__active {animation: blink 1.33s ease-out infinite;}
+  .sensor__active-two {animation: blink2 0.5s ease-out infinite;}
   .display-none {display: none}
   .hidden {content-visibility: hidden;}
+  .shiny {
+    border-radius: 25px;
+    animation: blink 3.33s ease-out infinite;
+    background-color: #91faffc5;
+    color: $screen;
+    svg {color: rgb(6, 97, 109) !important}
+    box-shadow: inset 0 0 9px 5px #91faffed, 0 0 7px 6px #91faff;
+  }
   
-  
+}
+
+.buzz {
+  animation: buzz 0.2s infinite;
 }
 

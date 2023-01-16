@@ -14,6 +14,19 @@
   }
 }
 
+@keyframes blink2 {
+
+  0% {
+    box-shadow: 0 0 50px rgb(255, 217, 121),0 0 25px white;
+  }
+  20% {
+    box-shadow: 0 0 10px rgb(255, 217, 121),0 0 0px white;
+  }
+  100% {
+    box-shadow: 0 0 50px rgb(255, 217, 121), 0 0 25px white;
+  }
+}
+
 @keyframes auto-progress {
   0% {
     width: 0%;
@@ -23,3 +36,17 @@
     width: 100%;
   }
 }
+
+@keyframes caught {
+  0% {
+    scale: 190%;
+    box-shadow: inset 0 0 50px rgb(255, 217, 121);
+  }
+
+  100% {
+    scale: 100%;
+    box-shadow: none;
+  }
+}
+
+

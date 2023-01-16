@@ -89,3 +89,8 @@ export const getElement = (selector) => {
   return element
 }
 
+export const randomBoolean = () => {
+  const bool = randomNumber(0,1) === 1  ? true : false
+  return bool
+}
+
